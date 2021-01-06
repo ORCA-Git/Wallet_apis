@@ -8,6 +8,7 @@
 const http = require('http');
 const app = require('../server/index');
 const Logger = require('../utils/logger');
+const config = require('../config/appconfig');
 
 const logger = new Logger();
 
@@ -80,7 +81,7 @@ function onListening() {
 		? `pipe ${addr}`
 		: `port ${addr.port}`;
 
-	logger.log(`the server started listining on port ${bind}`, 'info');
+	logger.log(`the server [${config.app.server}] started listining on port ${bind}`, 'info');
 }
 
 /**

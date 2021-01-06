@@ -5,6 +5,7 @@ require('dotenv').config();
 // config.js
 module.exports = {
 	app: {
+		server: process.env.SERVERIP || 'localhost',
 		port: process.env.DEV_APP_PORT || 3000,
 		appName: process.env.APP_NAME || 'iLrn',
 		env: process.env.NODE_ENV || 'development',

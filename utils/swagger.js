@@ -70,7 +70,7 @@ const options = {
 			},
 		],
 		schemes: ['http'],
-		host: `localhost:${config.app.port}`,
+		host: `${config.app.server}:${config.app.port}`,
 		basePath: '/api/v1',
 		securityDefinitions: {
 			Bearer: {
