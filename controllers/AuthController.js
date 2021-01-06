@@ -21,14 +21,10 @@ class AuthController extends BaseController {
 			const schema = {
 				email: Joi.string().email().required(),
 				password: Joi.string().required(),
-				fcmToken: Joi.string(),
-				platform: Joi.string().valid('ios', 'android', 'web').required(),
 			};
 			const { error } = Joi.validate({
 				email: req.body.email,
 				password: req.body.password,
-				fcmToken: req.body.fcmToken,
-				platform: req.headers.platform,
 			}, schema);
 			requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
 			const options = {
@@ -37,31 +33,6 @@ class AuthController extends BaseController {
 			const user = await super.getByCustomOptions(req, 'Users', options);
 			if (!user) {
 				requestHandler.throwError(400, 'bad request', 'invalid email address')();
-			}
-
-			if (req.headers.fcmtoken && req.headers.platform) {
-				const find = {
-					where: {
-						user_id: user.id,
-						fcmToken: req.headers.fcmtoken,
-					},
-				};
-
-				const fcmToken = await super.getByCustomOptions(req, 'UserTokens', find);
-				const data = {
-					userId: user.id,
-					fcmToken: req.headers.fcmtoken,
-					platform: req.headers.platform,
-				};
-
-				if (fcmToken) {
-					req.params.id = fcmToken.id;
-					await super.updateById(req, 'UserTokens', data);
-				} else {
-					await super.create(req, 'UserTokens', data);
-				}
-			} else {
-				requestHandler.throwError(400, 'bad request', 'please provide all required headers')();
 			}
 
 			await bcrypt
@@ -119,7 +90,7 @@ class AuthController extends BaseController {
 						config.sendgrid.from_email,
 						[data.email],
 						' iLearn Microlearning ',
-						`please consider the following as your password${randomString}`,
+						`please consider the following as your password ${randomString}`,
 						`<p style="font-size: 32px;">Hello ${data.name}</p>  please consider the following as your password: ${randomString}`,
 					);
 				},
@@ -135,7 +106,7 @@ class AuthController extends BaseController {
 			data.password = hashedPass;
 			const createdUser = await super.create(req, 'Users');
 			if (!(_.isNull(createdUser))) {
-				requestHandler.sendSuccess(res, 'email with your password sent successfully', 201)();
+				requestHandler.sendSuccess(res, `Your Password is ${randomString}`, 201)();
 			} else {
 				requestHandler.throwError(422, 'Unprocessable Entity', 'unable to process the contained instructions')();
 			}

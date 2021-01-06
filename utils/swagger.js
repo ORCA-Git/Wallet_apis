@@ -38,9 +38,9 @@ getFullPathes(filesName);
 const options = {
 	swaggerDefinition: {
 		info: {
-			title: 'i Lrn',
+			title: 'ApiWallet',
 			version: '1.0.0',
-			description: 'i Lrn Microlearning System,REST API with Swagger doc',
+			description: 'Api Wallet,REST API with Swagger doc',
 			contact: {
 				email: 'a.mezian@dreamtechs.co',
 			},

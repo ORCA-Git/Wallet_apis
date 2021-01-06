@@ -60,16 +60,6 @@ router.post('/signUp', AuthController.signUp);
   *     produces:
   *       - application/json
   *     parameters:
-  *     - name: fcmToken
-  *       in: header
-  *       description: fire base cloud messaging token
-  *       required: true
-  *       type: string
-  *     - name: platform
-  *       in: header
-  *       description: the platform that the user is using to access the system ios/android
-  *       required: true
-  *       type: string
   *     - name: body
   *       in: body
   *       description: the login credentials

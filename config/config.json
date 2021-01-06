@@ -1,12 +1,12 @@
 {
   "development": {
-  "url" : "postgres://postgres:password@localhost:5432/iLrn",
-  "username": "postgres",
-  "password": "password",
-  "database": "iLrn",
+  "url" : "mysql://root:wallet@api@localhost:3306/wallet-api",
+  "username": "root",
+  "password": "wallet@api",
+  "database": "wallet-api",
   "host": "127.0.0.1",
-  "port": 5432,
-  "dialect": "postgres"
+  "port": 3306,
+  "dialect": "mysql"
   },
   "test": {
   "url" : "postgres://postgres:password@localhost:5432/iLrn",

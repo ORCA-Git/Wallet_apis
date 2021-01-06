@@ -15,7 +15,7 @@ module.exports = {
 		password: process.env.DB_PASS || 'password',
 		username: process.env.DB_USER || 'postgres',
 		host: process.env.DB_HOST || '127.0.0.1',
-		dialect: 'postgres',
+		dialect: 'mysqli',
 		logging: true,
 	},
 	winiston: {

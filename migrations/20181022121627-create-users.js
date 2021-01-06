@@ -43,11 +43,7 @@ module.exports = {
 		},
 		role_id: {
 			type: Sequelize.INTEGER,
-			onDelete: 'NO ACTION',
-			references: {
-				model: 'Roles',
-				key: 'id',
-			},
+			onDelete: 'NO ACTION'
 		},
 
 	}),
