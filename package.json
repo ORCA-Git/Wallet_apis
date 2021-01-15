@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bin/www.js"
+    "start": "nodemon bin/www.js"
   },
   "engines": {
     "node": "8.11.0",

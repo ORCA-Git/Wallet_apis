@@ -1,5 +1,3 @@
-
-
 module.exports = (sequelize, DataTypes) => {
 	const Users = sequelize.define('Users', {
 		id: {
@@ -33,11 +31,13 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.DATE,
 		},
 		createdAt:
-		{
-			type: DataTypes.DATE, field: 'created_at',
-		},
+						{
+							type: DataTypes.DATE,
+							field: 'created_at',
+						},
 		updatedAt: {
-			type: DataTypes.DATE, field: 'updated_at',
+			type: DataTypes.DATE,
+			field: 'updated_at',
 		},
 
 	}, {});

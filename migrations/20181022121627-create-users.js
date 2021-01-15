@@ -43,7 +43,7 @@ module.exports = {
 		},
 		role_id: {
 			type: Sequelize.INTEGER,
-			onDelete: 'NO ACTION'
+			onDelete: 'NO ACTION',
 		},
 
 	}),
