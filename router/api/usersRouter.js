@@ -4,7 +4,7 @@ const auth = require('../../utils/auth');
 /**
    * @swagger
    * definitions:
-   *   users:
+   *   Users:
    *     required:
    *       - id
    *       - username
@@ -24,7 +24,7 @@ const auth = require('../../utils/auth');
  * /users/{userId}:
  *   get:
  *     tags:
- *       - users
+ *       - Users
  *     description: Return a specific user
  *     security:
  *       - Bearer: []
@@ -43,14 +43,14 @@ const auth = require('../../utils/auth');
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.get('/:id([0-9])', auth.isAuthunticated, UsersController.getUserById);
+router.get('/:id([0-9])', auth.isAuthenticated, UsersController.getUserById);
 
 /**
  * @swagger
  * /users/{userId}:
  *   delete:
  *     tags:
- *       - users
+ *       - Users
  *     security:
  *       - Bearer: []
  *     produces:
@@ -75,7 +75,7 @@ router.delete('/:id([0-9])', UsersController.deleteById);
  * /users/profile:
  *   get:
  *     tags:
- *       - users
+ *       - Users
  *     security:
  *       - Bearer: []
  *     produces:
@@ -86,7 +86,7 @@ router.delete('/:id([0-9])', UsersController.deleteById);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.get('/profile', auth.isAuthunticated, UsersController.getProfile);
+router.get('/profile', auth.isAuthenticated, UsersController.getProfile);
 
 
 module.exports = router;

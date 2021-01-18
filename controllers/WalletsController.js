@@ -16,7 +16,7 @@ class WalletsController extends BaseController {
 						console.log(reqParam);
 						const options = { where: { walletId: reqParam } };
 						const result = await super.getByOptions(req, 'Wallets', options);
-						return requestHandler.sendSuccess(res, 'User Data Extracted')({ result });
+						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
 				}
@@ -24,8 +24,8 @@ class WalletsController extends BaseController {
 
 		static async deleteById(req, res) {
 				try {
-						const result = await super.deleteById(req, 'Users');
-						return requestHandler.sendSuccess(res, 'User Deleted Successfully')({ result });
+						const result = await super.deleteById(req, 'Wallets');
+						return requestHandler.sendSuccess(res, 'Wallet Deleted Successfully')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
 				}
@@ -39,7 +39,7 @@ class WalletsController extends BaseController {
 								where: { userId: user.payload.id },
 						};
 						const walletUser = await req.app.get('db').Wallets.findAll(options);
-						return requestHandler.sendSuccess(res, 'User Profile fetched Successfully')({ walletUser });
+						return requestHandler.sendSuccess(res, 'Wallet fetched Successfully')({ walletUser });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
 				}

@@ -46,4 +46,4 @@ function verifyToken(req, res, next) {
 }
 
 
-module.exports = { getJwtToken: getTokenFromHeader, isAuthunticated: verifyToken };
+module.exports = { getJwtToken: getTokenFromHeader, isAuthenticated: verifyToken };

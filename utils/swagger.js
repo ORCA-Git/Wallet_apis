@@ -43,12 +43,12 @@ const options = {
 						version: '1.0.0',
 						description: 'Api Wallet,REST API with Swagger doc',
 						contact: {
-								email: 'a.mezian@dreamtechs.co',
+								email: 'amonchaibeer@gmail.com',
 						},
 				},
 				tags: [
 						{
-								name: 'users',
+								name: 'Users',
 								description: 'Users API',
 						},
 						{
@@ -60,7 +60,7 @@ const options = {
 								description: 'for testing and sending emails ',
 						},
 						{
-								name: 'partners',
+								name: 'Partners',
 								description: 'Partner API',
 						},
 				],

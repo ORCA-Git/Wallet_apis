@@ -5,7 +5,7 @@ const auth = require('../../utils/auth');
 /**
  * @swagger
  * definitions:
- *   partners:
+ *   Partners:
  *     required:
  *       - id
  *       - username
@@ -40,7 +40,7 @@ const auth = require('../../utils/auth');
  * /partners:
  *   get:
  *     tags:
- *       - partners
+ *       - Partners
  *     description: Return a specific user
  *     security:
  *       - Bearer: []
@@ -52,14 +52,14 @@ const auth = require('../../utils/auth');
  *         schema:
  *           $ref: '#/definitions/partnersObject'
  */
-router.get('/', auth.isAuthunticated, PartnersController.getAllPartner);
+router.get('/', auth.isAuthenticated, PartnersController.getAllPartner);
 
 /**
  * @swagger
  * /partners:
  *   post:
  *     tags:
- *       - partners
+ *       - Partners
  *     produces:
  *       - application/json
  *     parameters:
@@ -131,14 +131,14 @@ router.get('/', auth.isAuthunticated, PartnersController.getAllPartner);
 router.post('/', PartnersController.addPartner);
 /**
  * @swagger
- * /partners/{userId}:
+ * /partners/{partnerId}:
  *   put:
  *     tags:
- *       - partners
+ *       - Partners
  *     produces:
  *       - application/json
  *     parameters:
- *     - name: userId
+ *     - name: partnerId
  *       description: numeric id of the user to get
  *       in: path
  *       required: true
@@ -171,24 +171,6 @@ router.post('/', PartnersController.addPartner);
  *             type: string
  *           remark:
  *             type: string
- *           walletAmount:
- *             type: string
- *           walletId:
- *             type: string
- *           minAmtTransaction:
- *             type: string
- *           maxAmtTransaction:
- *             type: string
- *           limitTransaction:
- *             type: string
- *           fee:
- *             type: string
- *           username:
- *             type: string
- *           password:
- *             type: string
- *           secretKey:
- *             type: string
  *     responses:
  *       201:
  *         description: create partner for authenticate to system
@@ -200,17 +182,17 @@ router.post('/', PartnersController.addPartner);
 router.put('/:id([0-9])', PartnersController.updatePartner);
 /**
  * @swagger
- * /partners/{userId}:
+ * /partners/{partnerId}:
  *   get:
  *     tags:
- *       - partners
+ *       - Partners
  *     description: Return a specific user
  *     security:
  *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
- *      - name: userId
+ *      - name: partnerId
  *        description: numeric id of the user to get
  *        in: path
  *        required: true
@@ -222,20 +204,20 @@ router.put('/:id([0-9])', PartnersController.updatePartner);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.get('/:id([0-9])', auth.isAuthunticated, PartnersController.getUserById);
+router.get('/:id([0-9])', auth.isAuthenticated, PartnersController.getPartnerById);
 
 /**
  * @swagger
- * /partners/{userId}:
+ * /partners/{partnerId}:
  *   delete:
  *     tags:
- *       - partners
+ *       - Partners
  *     security:
  *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
- *      - name: userId
+ *      - name: partnerId
  *        description: numeric id of the user to get
  *        in: path
  *        required: true

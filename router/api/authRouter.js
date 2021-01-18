@@ -76,9 +76,37 @@ router.post('/signUp', AuthController.signUp);
   *             type: string
   *     responses:
   *       200:
-  *         description: user logged in succesfully
+  *         description: user logged in successfully
   */
 router.post('/login', AuthController.login);
+/**
+ * @swagger
+ * /token/issue:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - name: body
+ *       in: body
+ *       description: the login credentials for Partner
+ *       required: true
+ *       schema:
+ *         type: object
+ *         required:
+ *           - username
+ *           - password
+ *         properties:
+ *           username:
+ *             type: string
+ *           password:
+ *             type: string
+ *     responses:
+ *       200:
+ *         description: partner logged in successfully
+ */
+router.post('/token/issue', AuthController.loginPartner);
 /**
   * @swagger
   * /refreshToken:
@@ -105,7 +133,7 @@ router.post('/login', AuthController.login);
   *       200:
   *         description: a new jwt token with a new expiry date is issued
   */
-router.post('/refreshToken', auth.isAuthunticated, AuthController.refreshToken);
+router.post('/refreshToken', auth.isAuthenticated, AuthController.refreshToken);
 
 /**
  * @swagger
@@ -140,6 +168,6 @@ router.post('/refreshToken', auth.isAuthunticated, AuthController.refreshToken);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.post('/logout', auth.isAuthunticated, AuthController.logOut);
+router.post('/logout', auth.isAuthenticated, AuthController.logOut);
 
 module.exports = router;

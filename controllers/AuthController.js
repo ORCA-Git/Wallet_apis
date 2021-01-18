@@ -73,6 +73,61 @@ class AuthController extends BaseController {
 				}
 		}
 
+		static async loginPartner(req, res) {
+				try {
+						const schema = {
+								username: Joi.string()
+										.required(),
+								password: Joi.string()
+										.required(),
+						};
+						const { error } = Joi.validate({
+								username: req.body.username,
+								password: req.body.password,
+						}, schema);
+						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
+						const options = {
+								where: { username: req.body.username },
+						};
+						const user = await super.getByCustomOptions(req, 'Partners', options);
+						if (!user) {
+								requestHandler.throwError(400, 'bad request', 'invalid Username')();
+						}
+						await bcrypt
+								.compare(req.body.password, user.password)
+								.then(
+										requestHandler.throwIf(r => !r, 400, 'incorrect', 'failed to login bad credentials'),
+										requestHandler.throwError(500, 'bcrypt error'),
+								);
+						const data = {
+								last_login_date: new Date(),
+						};
+						req.params.id = user.id;
+						await super.updateById(req, 'Partners', data);
+						const payload = _.omit(user.dataValues, ['createdAt', 'updatedAt', 'last_login_date', 'password', 'gender', 'mobile_number', 'user_image']);
+						const token = jwt.sign({ payload }, config.auth.jwt_secret, {
+								expiresIn: config.auth.jwt_expiresin,
+								algorithm: 'HS512',
+						});
+						const refreshToken = jwt.sign({
+								payload,
+						}, config.auth.refresh_token_secret, {
+								expiresIn: config.auth.refresh_token_expiresin,
+						});
+						tokenList[refreshToken] = {
+								status: 'Logged in',
+								token,
+								refreshToken,
+						};
+						requestHandler.sendSuccess(res, 'Partners logged in Successfully')({
+								token,
+								refreshToken,
+						});
+				} catch (error) {
+						requestHandler.sendError(req, res, error);
+				}
+		}
+
 		static async signUp(req, res) {
 				try {
 						const data = req.body;

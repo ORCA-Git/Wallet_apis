@@ -1,11 +1,11 @@
 const router = require('express')
 		.Router();
-const WalletsController = require('../../controllers/WalletsController');
+const TransfersController = require('../../controllers/TransfersController');
 const auth = require('../../utils/auth');
 /**
  * @swagger
  * definitions:
- *   Wallets:
+ *   Transfers:
  *     required:
  *       - id
  *       - userId
@@ -23,27 +23,11 @@ const auth = require('../../utils/auth');
 
 /**
  * @swagger
- * definitions:
- *   partnersObject:
- *     properties:
- *       data:
- *         type: object
- *         properties:
- *           id:
- *             type: integer
- *           username:
- *             type: string
- *           email:
- *             type: string
- */
-
-/**
- * @swagger
- * /wallets:
+ * /transfers:
  *   get:
  *     tags:
- *       - Wallets
- *     description: partner get wallets
+ *       - Transfers
+ *     description: transfers list
  *     security:
  *       - Bearer: []
  *     produces:
@@ -54,14 +38,14 @@ const auth = require('../../utils/auth');
  *         schema:
  *           $ref: '#/definitions/partnersObject'
  */
-router.get('/', auth.isAuthenticated, WalletsController.getProfileWallet);
+router.get('/', TransfersController.getAllTransfers);
 
 /**
  * @swagger
- * /wallets:
+ * /transfers:
  *   post:
  *     tags:
- *       - Wallets
+ *       - Transfers
  *     produces:
  *       - application/json
  *     parameters:
@@ -71,30 +55,44 @@ router.get('/', auth.isAuthenticated, WalletsController.getProfileWallet);
  *       required: true
  *       schema:
  *         type: object
- *         required:
- *           - partnerId
- *           - walletId
- *           - amount
  *         properties:
- *           partnerId:
+ *           order_no:
  *             type: string
- *           walletId:
+ *           invoice:
  *             type: string
- *           amount:
+ *           transaction_date:
+ *             type: string
+ *           rate:
+ *             type: string
+ *           fee:
+ *             type: string
+ *           receipt_date:
+ *             type: string
+ *           to_customer:
+ *             type: string
+ *           from_partner:
+ *             type: string
+ *           reason:
+ *             type: string
+ *           submitted:
+ *             type: string
+ *           sms:
+ *             type: string
+ *           coupon:
  *             type: string
  *     responses:
  *       201:
- *         description: create partner for authenticate to system
+ *         description: create transfer
  * 		 404:
  * 		   description: the url you are trying to reach is not hosted on our server
  */
-router.post('/', auth.isAuthenticated, WalletsController.topUpWalletById);
+router.post('/', TransfersController.createTransfers);
 /**
  * @swagger
- * /wallets/{walletId}:
+ * /transfers/{transferId}:
  *   put:
  *     tags:
- *       - Wallets
+ *       - Transfers
  *     produces:
  *       - application/json
  *     parameters:
@@ -119,14 +117,14 @@ router.post('/', auth.isAuthenticated, WalletsController.topUpWalletById);
  *       404:
  *         description: the url you are trying to reach is not hosted on our server
  */
-router.put('/:id', auth.isAuthenticated, WalletsController.updateWalletById);
+router.put('/:id', auth.isAuthenticated, TransfersController.updateTransferById);
 
 /**
  * @swagger
- * /wallets/{walletId}:
+ * /transfers/{transferId}:
  *   get:
  *     tags:
- *       - Wallets
+ *       - Transfers
  *     description: get specify wallet
  *     security:
  *       - Bearer: []
@@ -145,20 +143,20 @@ router.put('/:id', auth.isAuthenticated, WalletsController.updateWalletById);
  *         schema:
  *           $ref: '#/definitions/wallets'
  */
-router.get('/:id', auth.isAuthenticated, WalletsController.getByWalletId);
+router.get('/:id', auth.isAuthenticated, TransfersController.getByTransferId);
 
 /**
  * @swagger
- * /wallets/{walletId}:
+ * /transfers/{transferId}:
  *   delete:
  *     tags:
- *       - Wallets
+ *       - Transfers
  *     security:
  *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
- *      - name: walletId
+ *      - name: transferId
  *        description: numeric id of the user to get
  *        in: path
  *        required: true
@@ -170,6 +168,6 @@ router.get('/:id', auth.isAuthenticated, WalletsController.getByWalletId);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', auth.isAuthenticated, WalletsController.deleteById);
+router.delete('/:id([0-9])', auth.isAuthenticated, TransfersController.deleteById);
 
 module.exports = router;
