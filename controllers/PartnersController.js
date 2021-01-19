@@ -90,6 +90,9 @@ class UsersController extends BaseController {
 						if (!(_.isNull(createdUser))) {
 								req.body.userId = createdUser.dataValues.id;
 								req.body.amount = req.body.walletAmount;
+								req.body.minTransaction = req.body.minAmtTransaction;
+								req.body.maxTransaction = req.body.maxAmtTransaction;
+								req.body.limitTransactionPerDay = req.body.limitTransaction;
 								const createWallet = await super.create(req, 'Wallets');
 								if (!(_.isNull(createWallet))) {
 										requestHandler.sendSuccess(res, 'Success Create Partner', 201)();

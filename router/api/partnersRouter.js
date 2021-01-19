@@ -128,13 +128,15 @@ router.get('/', auth.isAuthenticated, PartnersController.getAllPartner);
  */
 
 
-router.post('/', PartnersController.addPartner);
+router.post('/', auth.isAuthenticated, PartnersController.addPartner);
 /**
  * @swagger
  * /partners/{partnerId}:
  *   put:
  *     tags:
  *       - Partners
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
@@ -174,12 +176,12 @@ router.post('/', PartnersController.addPartner);
  *     responses:
  *       201:
  *         description: create partner for authenticate to system
- * 		 404:
- * 		   description: the url you are trying to reach is not hosted on our server
+ *       404:
+ *         description: the url you are trying to reach is not hosted on our server
  */
 
 
-router.put('/:id([0-9])', PartnersController.updatePartner);
+router.put('/:id([0-9])', auth.isAuthenticated, PartnersController.updatePartner);
 /**
  * @swagger
  * /partners/{partnerId}:
@@ -229,6 +231,6 @@ router.get('/:id([0-9])', auth.isAuthenticated, PartnersController.getPartnerByI
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', PartnersController.deleteById);
+router.delete('/:id([0-9])', auth.isAuthenticated, PartnersController.deleteById);
 
 module.exports = router;

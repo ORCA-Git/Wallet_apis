@@ -62,6 +62,8 @@ router.get('/', auth.isAuthenticated, WalletsController.getProfileWallet);
  *   post:
  *     tags:
  *       - Wallets
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
@@ -95,6 +97,8 @@ router.post('/', auth.isAuthenticated, WalletsController.topUpWalletById);
  *   put:
  *     tags:
  *       - Wallets
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:

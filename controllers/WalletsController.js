@@ -13,7 +13,6 @@ class WalletsController extends BaseController {
 		static async getByWalletId(req, res) {
 				try {
 						const reqParam = req.params.id;
-						console.log(reqParam);
 						const options = { where: { walletId: reqParam } };
 						const result = await super.getByOptions(req, 'Wallets', options);
 						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
@@ -83,10 +82,12 @@ class WalletsController extends BaseController {
 						try {
 								const options = {
 										where: {
-												id: req.body.partnerId,
+												userId: req.body.partnerId,
 												walletId: req.body.walletId,
 										},
 								};
+								req.params.id = req.body.partnerId;
+								await super.getById(req, 'Partners');
 								const result = await super.getByOptions(req, 'Wallets', options);
 								let balance = result.dataValues.amount;
 								balance += Number(req.body.amount);
@@ -98,7 +99,7 @@ class WalletsController extends BaseController {
 										.Wallets
 										.update(data, {
 												where: {
-														id: req.body.partnerId,
+														userId: req.body.partnerId,
 														walletId: req.body.walletId,
 												},
 										})

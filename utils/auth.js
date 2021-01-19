@@ -18,12 +18,12 @@ function getTokenFromHeader(req) {
 function verifyToken(req, res, next) {
 	try {
 		if (_.isUndefined(req.headers.authorization)) {
-			requestHandler.throwError(401, 'Unauthorized', 'Not Authorized to access this resource!')();
+			requestHandler.throwError(401, 'Unauthorized', 'Not Authorized to access this resource! (header)')();
 		}
 		const Bearer = req.headers.authorization.split(' ')[0];
 
 		if (!Bearer || Bearer !== 'Bearer') {
-			requestHandler.throwError(401, 'Unauthorized', 'Not Authorized to access this resource!')();
+			requestHandler.throwError(401, 'Unauthorized', 'Not Authorized to access this resource! (bearer)')();
 		}
 
 		const token = req.headers.authorization.split(' ')[1];

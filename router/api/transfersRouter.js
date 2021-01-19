@@ -38,7 +38,7 @@ const auth = require('../../utils/auth');
  *         schema:
  *           $ref: '#/definitions/partnersObject'
  */
-router.get('/', TransfersController.getAllTransfers);
+router.get('/', auth.isAuthenticated, TransfersController.getAllTransfers);
 
 /**
  * @swagger
@@ -46,6 +46,8 @@ router.get('/', TransfersController.getAllTransfers);
  *   post:
  *     tags:
  *       - Transfers
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
@@ -86,13 +88,15 @@ router.get('/', TransfersController.getAllTransfers);
  * 		 404:
  * 		   description: the url you are trying to reach is not hosted on our server
  */
-router.post('/', TransfersController.createTransfers);
+router.post('/', auth.isAuthenticated, TransfersController.createTransfers);
 /**
  * @swagger
  * /transfers/{transferId}:
  *   put:
  *     tags:
  *       - Transfers
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
