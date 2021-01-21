@@ -60,6 +60,8 @@ router.get('/', auth.isAuthenticated, PartnersController.getAllPartner);
  *   post:
  *     tags:
  *       - Partners
+ *     security:
+ *       - Bearer: []
  *     produces:
  *       - application/json
  *     parameters:
