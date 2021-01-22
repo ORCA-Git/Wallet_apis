@@ -1,15 +1,83 @@
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcrypt');
+const async = require('async');
 const BaseController = require('../controllers/BaseController');
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
 const auth = require('../utils/auth');
+const stringUtil = require('../utils/stringUtil');
+const email = require('../utils/email');
+const config = require('../config/appconfig');
 
 const logger = new Logger();
 const requestHandler = new RequestHandler(logger);
 
 class UsersController extends BaseController {
+		static async signUp(req, res) {
+				try {
+						const data = req.body;
+						const schema = {
+								username: Joi.string()
+										.required(),
+								password: Joi.string()
+										.required(),
+								employeeCode: Joi.string()
+										.required(),
+								employeeName: Joi.string()
+										.required(),
+								idCard: Joi.string()
+										.required(),
+						};
+						const randomString = stringUtil.generateString();
+
+						const { error } = Joi.validate({
+								username: data.username,
+								password: data.password,
+								employeeCode: data.employeeCode,
+								employeeName: data.employeeName,
+								idCard: data.idCard,
+						}, schema);
+						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
+						const options = { where: { username: data.username } };
+						const user = await super.getByCustomOptions(req, 'Users', options);
+
+						if (user) {
+								requestHandler.throwError(400, 'bad request', 'invalid username already existed')();
+						}
+
+						async.parallel([
+								function one(callback) {
+										email.sendEmail(
+												callback,
+												config.sendgrid.from_email,
+												[data.email],
+												' WalletApi',
+												`please consider the following as your password ${data.password}`,
+												`<p style="font-size: 32px;">Hello ${data.employeeName}</p>  please consider the following as your password: ${randomString}`,
+										);
+								},
+						], (err, results) => {
+								if (err) {
+										requestHandler.throwError(500, 'internal Server Error', 'failed to send password email')();
+								} else {
+										logger.log(`an email has been sent at: ${new Date()} to : ${data.email} with the following results ${results}`, 'info');
+								}
+						});
+
+						data.password = bcrypt.hashSync(data.password, config.auth.saltRounds);
+						const createdUser = await super.create(req, 'Users');
+						if (!(_.isNull(createdUser))) {
+								requestHandler.sendSuccess(res, `Your Password is ${randomString}`, 201)();
+						} else {
+								requestHandler.throwError(422, 'Unprocessable Entity', 'unable to process the contained instructions')();
+						}
+				} catch (err) {
+						requestHandler.sendError(req, res, err);
+				}
+		}
+
 		static async getUserById(req, res) {
 				try {
 						const reqParam = req.params.id;

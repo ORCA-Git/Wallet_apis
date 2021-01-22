@@ -44,7 +44,63 @@ const auth = require('../../utils/auth');
  *           $ref: '#/definitions/users'
  */
 router.get('/:id([0-9])', auth.isAuthenticated, UsersController.getUserById);
+/**
+ * @swagger
+ * /users/signUp:
+ *   post:
+ *     tags:
+ *       - Users
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - name: body
+ *       in: body
+ *       description: sign up using email and full name
+ *       required: true
+ *       schema:
+ *         type: object
+ *         required:
+ *           - employeeCode
+ *           - employeeName
+ *           - idCard
+ *           - username
+ *           - password
+ *         properties:
+ *           username:
+ *             type: string
+ *           password:
+ *             type: string
+ *           employeeCode:
+ *             type: string
+ *           employeeName:
+ *             type: string
+ *           idCard:
+ *             type: string
+ *           nickName:
+ *             type: string
+ *           tel:
+ *             type: string
+ *           email:
+ *             type: string
+ *           birthDate:
+ *             type: string
+ *           age:
+ *             type: string
+ *           startJobDate:
+ *             type: string
+ *           Role:
+ *             type: string
+ *           Address:
+ *             type: string
+ *           remark:
+ *             type: string
+ *     responses:
+ *       201:
+ *         description: send an email to the user with the auto generated password and register him
+ */
 
+
+router.post('/signUp', UsersController.signUp);
 /**
  * @swagger
  * /users/{userId}:

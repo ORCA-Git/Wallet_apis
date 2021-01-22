@@ -19,38 +19,6 @@ const auth = require('../../utils/auth');
    *         type: string
    */
 
-
-/**
-  * @swagger
-  * /signUp:
-  *   post:
-  *     tags:
-  *       - Auth
-  *     produces:
-  *       - application/json
-  *     parameters:
-  *     - name: body
-  *       in: body
-  *       description: sign up using email and full name
-  *       required: true
-  *       schema:
-  *         type: object
-  *         required:
-  *           - email
-  *           - name
-  *         properties:
-  *           email:
-  *             type: string
-  *           name:
-  *             type: string
-  *     responses:
-  *       201:
-  *         description: send an email to the user with the auto generated password and register him
-  */
-
-
-router.post('/signUp', AuthController.signUp);
-
 /**
   * @swagger
   * /login:
@@ -67,10 +35,10 @@ router.post('/signUp', AuthController.signUp);
   *       schema:
   *         type: object
   *         required:
-  *           - email
+  *           - username
   *           - password
   *         properties:
-  *           email:
+  *           username:
   *             type: string
   *           password:
   *             type: string

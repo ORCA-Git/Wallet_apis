@@ -1,13 +1,10 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-const async = require('async');
 const jwt = require('jsonwebtoken');
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
 const BaseController = require('../controllers/BaseController');
-const stringUtil = require('../utils/stringUtil');
-const email = require('../utils/email');
 const config = require('../config/appconfig');
 const auth = require('../utils/auth');
 
@@ -19,23 +16,22 @@ class AuthController extends BaseController {
 		static async login(req, res) {
 				try {
 						const schema = {
-								email: Joi.string()
-										.email()
+								username: Joi.string()
 										.required(),
 								password: Joi.string()
 										.required(),
 						};
 						const { error } = Joi.validate({
-								email: req.body.email,
+								username: req.body.username,
 								password: req.body.password,
 						}, schema);
 						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
 						const options = {
-								where: { email: req.body.email },
+								where: { username: req.body.username },
 						};
 						const user = await super.getByCustomOptions(req, 'Users', options);
 						if (!user) {
-								requestHandler.throwError(400, 'bad request', 'invalid email address')();
+								requestHandler.throwError(400, 'bad request', 'invalid username')();
 						}
 
 						await bcrypt
@@ -125,61 +121,6 @@ class AuthController extends BaseController {
 						});
 				} catch (error) {
 						requestHandler.sendError(req, res, error);
-				}
-		}
-
-		static async signUp(req, res) {
-				try {
-						const data = req.body;
-						const schema = {
-								email: Joi.string()
-										.email()
-										.required(),
-								name: Joi.string()
-										.required(),
-						};
-						const randomString = stringUtil.generateString();
-
-						const { error } = Joi.validate({
-								email: data.email,
-								name: data.name,
-						}, schema);
-						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
-						const options = { where: { email: data.email } };
-						const user = await super.getByCustomOptions(req, 'Users', options);
-
-						if (user) {
-								requestHandler.throwError(400, 'bad request', 'invalid email account,email already existed')();
-						}
-
-						async.parallel([
-								function one(callback) {
-										email.sendEmail(
-												callback,
-												config.sendgrid.from_email,
-												[data.email],
-												' iLearn Microlearning ',
-												`please consider the following as your password ${randomString}`,
-												`<p style="font-size: 32px;">Hello ${data.name}</p>  please consider the following as your password: ${randomString}`,
-										);
-								},
-						], (err, results) => {
-								if (err) {
-										requestHandler.throwError(500, 'internal Server Error', 'failed to send password email')();
-								} else {
-										logger.log(`an email has been sent at: ${new Date()} to : ${data.email} with the following results ${results}`, 'info');
-								}
-						});
-
-						data.password = bcrypt.hashSync(randomString, config.auth.saltRounds);
-						const createdUser = await super.create(req, 'Users');
-						if (!(_.isNull(createdUser))) {
-								requestHandler.sendSuccess(res, `Your Password is ${randomString}`, 201)();
-						} else {
-								requestHandler.throwError(422, 'Unprocessable Entity', 'unable to process the contained instructions')();
-						}
-				} catch (err) {
-						requestHandler.sendError(req, res, err);
 				}
 		}
 

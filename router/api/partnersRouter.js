@@ -183,7 +183,7 @@ router.post('/', auth.isAuthenticated, PartnersController.addPartner);
  */
 
 
-router.put('/:id([0-9])', auth.isAuthenticated, PartnersController.updatePartner);
+router.put('/:id([0-9])', PartnersController.updatePartner, auth.isAuthenticated);
 /**
  * @swagger
  * /partners/{partnerId}:
