@@ -4,19 +4,30 @@
   
  install node version 8.11.0 or use nvm to downgrade your node version 
  
- delete the existing package.lock.json and run npm install 
+ delete the existing package.lock.json and run
+ copy .env.example to .env
+ then run install node module
+`````
+ cp .env.example .env
+ npm install
+`````
+ then you create a mysql database Named [**wallet-api**]  with the following credentials 
+ then running
+ ```` 
+ docker-compose up
+ ````
+ username : root
  
- then you create a postgres database Named iLrn with the following credintials 
- 
- username : postgres 
- 
- password : password
+ password : wallet@api
  
  run the migration using the following command :
- npx sequelize-cli db:migrate
- 
- Finally you run npm start 
+ ````
+  npx sequelize-cli db:migrate
+ ````
+ Finally, you run 
+ ````
+ npm start
+ ````
   
-Future improvements utilize compenent based structe
+Future improvements utilize component based structure
 
-please feel free to :star:  happy programming :v: 
