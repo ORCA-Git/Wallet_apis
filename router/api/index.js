@@ -10,4 +10,6 @@ router.use('/email', require('./sendEmail'));
 
 router.use('/', require('./authRouter'));
 
+router.use('/activity', require('./activityRouter'));
+
 module.exports = router;

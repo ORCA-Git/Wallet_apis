@@ -124,7 +124,7 @@ router.post('/signUp', UsersController.signUp);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', UsersController.deleteById);
+router.delete('/:id([0-9])', auth.isAuthenticated, UsersController.deleteById);
 
 /**
  * @swagger

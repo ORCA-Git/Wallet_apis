@@ -45,6 +45,7 @@ class AuthController extends BaseController {
 						};
 						req.params.id = user.id;
 						await super.updateById(req, 'Users', data);
+
 						const payload = _.omit(user.dataValues, ['createdAt', 'updatedAt', 'last_login_date', 'password', 'gender', 'mobile_number', 'user_image']);
 						const token = jwt.sign({ payload }, config.auth.jwt_secret, {
 								expiresIn: config.auth.jwt_expiresin,
@@ -100,6 +101,12 @@ class AuthController extends BaseController {
 						};
 						req.params.id = user.id;
 						await super.updateById(req, 'Partners', data);
+						const logData = {
+								action: 'login',
+								description: `Partner ${user.dataValues.employeeName} has logging`,
+								user: user.id,
+						};
+						await super.create(req, 'activity_log', logData);
 						const payload = _.omit(user.dataValues, ['createdAt', 'updatedAt', 'last_login_date', 'password', 'gender', 'mobile_number', 'user_image']);
 						const token = jwt.sign({ payload }, config.auth.jwt_secret, {
 								expiresIn: config.auth.jwt_expiresin,

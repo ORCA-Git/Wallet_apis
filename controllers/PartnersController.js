@@ -14,6 +14,13 @@ const requestHandler = new RequestHandler(logger);
 class UsersController extends BaseController {
 		static async getAllPartner(req, res) {
 				try {
+						const logData = {
+								action: 'get',
+								description: `User ${req.decoded.payload.employeeCode} has request partner list`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.getList(req, 'Partners');
 						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ result });
 				} catch (err) {
@@ -23,6 +30,13 @@ class UsersController extends BaseController {
 
 		static async getPartnerById(req, res) {
 				try {
+						const logData = {
+								action: 'get',
+								description: `User ${req.decoded.payload.employeeCode} has request partner by id`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
 						const schema = {
 								id: Joi.number()
@@ -41,6 +55,13 @@ class UsersController extends BaseController {
 
 		static async deleteById(req, res) {
 				try {
+						const logData = {
+								action: 'delete',
+								description: `User ${req.decoded.payload.employeeCode} has request delete partner list`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.deleteById(req, 'Partners');
 						return requestHandler.sendSuccess(res, 'User Deleted Successfully')({ result });
 				} catch (err) {
@@ -50,6 +71,13 @@ class UsersController extends BaseController {
 
 		static async getProfile(req, res) {
 				try {
+						const logData = {
+								action: 'get',
+								description: `User ${req.decoded.payload.employeeCode} has get Profile`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const tokenFromHeader = auth.getJwtToken(req);
 						const user = jwt.decode(tokenFromHeader);
 						const options = {
@@ -65,6 +93,13 @@ class UsersController extends BaseController {
 
 		static async addPartner(req, res) {
 				try {
+						const logData = {
+								action: 'Add',
+								description: `User ${req.decoded.payload.employeeCode} has request add partner`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const data = req.body;
 						const schema = {
 								partnerCode: Joi.string()
@@ -110,6 +145,13 @@ class UsersController extends BaseController {
 
 		static async updatePartner(req, res) {
 				try {
+						const logData = {
+								action: 'update',
+								description: `User ${req.decoded.payload.employeeCode} has request update partner ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
 						const schema = {
 								id: Joi.number()

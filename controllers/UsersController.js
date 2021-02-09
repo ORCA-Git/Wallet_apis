@@ -17,6 +17,13 @@ const requestHandler = new RequestHandler(logger);
 class UsersController extends BaseController {
 		static async signUp(req, res) {
 				try {
+						const logData = {
+								action: 'Add',
+								description: 'User has signup',
+								user: '',
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const data = req.body;
 						const schema = {
 								username: Joi.string()
@@ -80,6 +87,13 @@ class UsersController extends BaseController {
 
 		static async getUserById(req, res) {
 				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request user ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
 						const schema = {
 								id: Joi.number()
@@ -98,6 +112,13 @@ class UsersController extends BaseController {
 
 		static async deleteById(req, res) {
 				try {
+						const logData = {
+								action: 'Delete',
+								description: `User ${req.decoded.payload.employeeCode} has request delete user ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.deleteById(req, 'Users');
 						return requestHandler.sendSuccess(res, 'User Deleted Successfully')({ result });
 				} catch (err) {
@@ -107,6 +128,13 @@ class UsersController extends BaseController {
 
 		static async getProfile(req, res) {
 				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request user profile`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const tokenFromHeader = auth.getJwtToken(req);
 						const user = jwt.decode(tokenFromHeader);
 						const options = {

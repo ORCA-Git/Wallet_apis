@@ -12,6 +12,13 @@ const requestHandler = new RequestHandler(logger);
 class WalletsController extends BaseController {
 		static async getByWalletId(req, res) {
 				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request wallet list`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
 						const options = { where: { walletId: reqParam } };
 						const result = await super.getByOptions(req, 'Wallets', options);
@@ -23,6 +30,13 @@ class WalletsController extends BaseController {
 
 		static async deleteById(req, res) {
 				try {
+						const logData = {
+								action: 'Delete',
+								description: `User ${req.decoded.payload.employeeCode} has request delete wallet by id ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.deleteById(req, 'Wallets');
 						return requestHandler.sendSuccess(res, 'Wallet Deleted Successfully')({ result });
 				} catch (err) {
@@ -32,6 +46,13 @@ class WalletsController extends BaseController {
 
 		static async getProfileWallet(req, res) {
 				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request wallet by id ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const tokenFromHeader = auth.getJwtToken(req);
 						const user = jwt.decode(tokenFromHeader);
 						const options = {
@@ -47,6 +68,13 @@ class WalletsController extends BaseController {
 
 		static async updateWalletById(req, res) {
 				try {
+						const logData = {
+								action: 'Update',
+								description: `User ${req.decoded.payload.employeeCode} has request wallet by id ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const data = {
 								updated_at: new Date(),
 								amount: req.body.amount,
@@ -79,6 +107,13 @@ class WalletsController extends BaseController {
 
 		static async topUpWalletById(req, res) {
 				try {
+						const logData = {
+								action: 'Add',
+								description: `User ${req.decoded.payload.employeeCode} has request topup wallet`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						try {
 								const options = {
 										where: {

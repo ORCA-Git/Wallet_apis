@@ -10,6 +10,13 @@ const requestHandler = new RequestHandler(logger);
 class TransfersController extends BaseController {
 		static async getAllTransfers(req, res) {
 				try {
+						const logData = {
+								action: 'get',
+								description: `User ${req.decoded.payload.employeeCode} has request transfer list`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.getList(req, 'Transfers');
 						return requestHandler.sendSuccess(res, 'Transfer Data Extracted')({ result });
 				} catch (err) {
@@ -19,6 +26,13 @@ class TransfersController extends BaseController {
 
 		static async getByTransferId(req, res) {
 				try {
+						const logData = {
+								action: 'get',
+								description: `User ${req.decoded.payload.employeeCode} has request transfer ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
 						const options = { where: { id: reqParam } };
 						const result = await super.getByOptions(req, 'Transfers', options);
@@ -30,6 +44,13 @@ class TransfersController extends BaseController {
 
 		static async createTransfers(req, res) {
 				try {
+						const logData = {
+								action: 'Add',
+								description: `User ${req.decoded.payload.employeeCode} has request add transfer`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const createdTransfers = await super.create(req, 'Transfers');
 						if (!(_.isNull(createdTransfers))) {
 								requestHandler.sendSuccess(res, 'Success Create Transfer', 201)();
@@ -43,6 +64,13 @@ class TransfersController extends BaseController {
 
 		static async deleteById(req, res) {
 				try {
+						const logData = {
+								action: 'Delete',
+								description: `User ${req.decoded.payload.employeeCode} has request delete transfer ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const result = await super.deleteById(req, 'Transfers');
 						return requestHandler.sendSuccess(res, 'Transfers Deleted Successfully')({ result });
 				} catch (err) {
@@ -53,6 +81,13 @@ class TransfersController extends BaseController {
 
 		static async updateTransferById(req, res) {
 				try {
+						const logData = {
+								action: 'Update',
+								description: `User ${req.decoded.payload.employeeCode} has request transfer update ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
 						const data = {
 								updated_at: new Date(),
 								amount: req.body.amount,
