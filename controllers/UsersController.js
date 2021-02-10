@@ -85,6 +85,22 @@ class UsersController extends BaseController {
 				}
 		}
 
+    static async getAllUser(req, res) {
+				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request List Admin User`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
+						const result = await super.getList(req, 'Users');
+						return requestHandler.sendSuccess(res, 'User Data Extracted')({ result });
+				} catch (error) {
+						return requestHandler.sendError(req, res, error);
+				}
+		}
+
 		static async getUserById(req, res) {
 				try {
 						const logData = {
