@@ -17,7 +17,24 @@ const auth = require('../../utils/auth');
    *       email:
    *         type: string
    */
-
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     tags:
+ *       - Users
+ *     description: Return a list user
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: a list user object
+ *         schema:
+ *           $ref: '#/definitions/users'
+ */
+router.get('/me', auth.isAuthenticated, UsersController.getAllUser);
 /**
  * @swagger
  * /users:

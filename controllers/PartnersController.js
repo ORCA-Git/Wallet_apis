@@ -119,6 +119,12 @@ class UsersController extends BaseController {
 						if (user) {
 								requestHandler.throwError(400, 'bad request', 'invalid username already existed')();
 						}
+						if (req.body.joinDate === '') {
+								delete req.body.joinDate;
+						}
+						if (req.body.expireDate === '') {
+								delete req.body.expireDate;
+						}
 						req.body.code = data.partnerCode;
 						data.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
 						const createdUser = await super.create(req, 'Partners');
