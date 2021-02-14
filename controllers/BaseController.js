@@ -137,7 +137,11 @@ class BaseController {
 				let results;
 				try {
 						if (_.isUndefined(options)) {
-								options = {};
+								options = {
+										order: [
+												['id', 'DESC'],
+										],
+								};
 						}
 
 						if (parseInt(page, 10)) {

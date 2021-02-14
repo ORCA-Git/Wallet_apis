@@ -46,8 +46,9 @@ class UsersController extends BaseController {
 						const { error } = Joi.validate({ id: reqParam }, schema);
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 
-						const result = await super.getById(req, 'Partners');
-						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ result });
+						const partner = await super.getById(req, 'Partners');
+						const wallet = await super.getById(req, 'Wallets');
+						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ partner, wallet });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
 				}
@@ -151,9 +152,10 @@ class UsersController extends BaseController {
 
 		static async updatePartner(req, res) {
 				try {
+						console.log(req.body.address);
 						const logData = {
 								action: 'update',
-								description: `User ${req.decoded.payload.employeeCode} has request update partner ${req.params.id}`,
+								description: `User ${req.decoded.employeeCode} has request update partner ${req.params.id}`,
 								user: req.decoded.payload.id,
 								date: new Date(),
 						};
@@ -171,7 +173,13 @@ class UsersController extends BaseController {
 						req.body.updated_at = new Date();
 						req.params.id = reqParam;
 						req.body.code = req.body.partnerCode;
+						req.body.uAddress = req.body.address;
 						await super.updateById(req, 'Partners', req.body);
+						req.body.amount = req.body.walletAmount;
+						req.body.minTransaction = req.body.minAmtTransaction;
+						req.body.maxTransaction = req.body.maxAmtTransaction;
+						req.body.limitTransactionPerDay = req.body.limitTransaction;
+						await super.updateById(req, 'Wallets', req.body);
 						requestHandler.sendSuccess(res, 'Success Update Partner', 200)();
 				} catch (err) {
 						requestHandler.sendError(req, res, err);

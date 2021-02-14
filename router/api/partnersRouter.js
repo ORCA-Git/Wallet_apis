@@ -154,6 +154,18 @@ router.post('/', auth.isAuthenticated, PartnersController.addPartner);
  *       required: true
  *       schema:
  *         type: object
+ *         required:
+ *           - partnerCode
+ *           - partnerName
+ *           - walletId
+ *           - walletAmount
+ *           - minAmtTransaction
+ *           - maxAmtTransaction
+ *           - limitTransaction
+ *           - fee
+ *           - username
+ *           - password
+ *           - secretKey
  *         properties:
  *           partnerCode:
  *             type: string
@@ -175,6 +187,24 @@ router.post('/', auth.isAuthenticated, PartnersController.addPartner);
  *             type: string
  *           remark:
  *             type: string
+ *           walletAmount:
+ *             type: string
+ *           walletId:
+ *             type: string
+ *           minAmtTransaction:
+ *             type: string
+ *           maxAmtTransaction:
+ *             type: string
+ *           limitTransaction:
+ *             type: string
+ *           fee:
+ *             type: string
+ *           username:
+ *             type: string
+ *           password:
+ *             type: string
+ *           secretKey:
+ *             type: string
  *     responses:
  *       201:
  *         description: create partner for authenticate to system
@@ -183,7 +213,7 @@ router.post('/', auth.isAuthenticated, PartnersController.addPartner);
  */
 
 
-router.put('/:id([0-9])', PartnersController.updatePartner, auth.isAuthenticated);
+router.put('/:id', auth.isAuthenticated, PartnersController.updatePartner);
 /**
  * @swagger
  * /partners/{partnerId}:
@@ -208,7 +238,7 @@ router.put('/:id([0-9])', PartnersController.updatePartner, auth.isAuthenticated
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.get('/:id([0-9])', auth.isAuthenticated, PartnersController.getPartnerById);
+router.get('/:id', auth.isAuthenticated, PartnersController.getPartnerById);
 
 /**
  * @swagger
@@ -233,6 +263,6 @@ router.get('/:id([0-9])', auth.isAuthenticated, PartnersController.getPartnerByI
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', auth.isAuthenticated, PartnersController.deleteById);
+router.delete('/:id', auth.isAuthenticated, PartnersController.deleteById);
 
 module.exports = router;

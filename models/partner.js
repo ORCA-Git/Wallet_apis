@@ -40,15 +40,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     country: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     joinDate: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
     expireDate: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
-    Address: {
+    uAddress: {
       type: DataTypes.TEXT,
+      allowNull: true,
     },
     createdAt:
         {
