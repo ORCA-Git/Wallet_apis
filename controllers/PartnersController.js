@@ -47,7 +47,10 @@ class UsersController extends BaseController {
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 
 						const partner = await super.getById(req, 'Partners');
-						const wallet = await super.getById(req, 'Wallets');
+						const options = {
+								where: { userId: req.params.id },
+						};
+						const wallet = await super.getByCustomOptions(req, 'Wallets', options);
 						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ partner, wallet });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
@@ -152,7 +155,6 @@ class UsersController extends BaseController {
 
 		static async updatePartner(req, res) {
 				try {
-						console.log(req.body.address);
 						const logData = {
 								action: 'update',
 								description: `User ${req.decoded.employeeCode} has request update partner ${req.params.id}`,

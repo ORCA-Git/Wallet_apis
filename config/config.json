@@ -18,12 +18,12 @@
   "dialect": "postgres"
   },
   "production": {
-  "url" : "postgres://postgres:password@localhost:5432/iLrn",
-  "username": "postgres",
-  "password": "password",
-  "database": "iLrn",
-  "host": "127.0.0.1",
-  "port": 5432,
-   "dialect": "postgres"
+    "url" : "mysql://root:wallet@api@13.228.120.202:3306/wallet-api",
+    "username": "root",
+    "password": "wallet@api",
+    "database": "wallet-api",
+    "host": "13.228.120.202",
+    "port": 3306,
+    "dialect": "mysql"
   }
 }

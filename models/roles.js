@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
 	}, {});
 	Roles.associate = function (models) {
 		// eslint-disable-next-line no-console
-		console.log(models);
 		// associations can be defined here
 	};
 	return Roles;
