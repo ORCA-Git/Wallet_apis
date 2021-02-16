@@ -10,9 +10,9 @@ class ActivityLogController extends BaseController {
 		static async getAllActivity(req, res) {
 				try {
 						const logData = {
-								action: 'get',
+								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request activity list`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);

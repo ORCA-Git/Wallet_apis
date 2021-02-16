@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const BaseController = require('../controllers/BaseController');
@@ -44,12 +43,35 @@ class WalletsController extends BaseController {
 				}
 		}
 
+		static async getAllWallet(req, res) {
+				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request wallet list`,
+								user: req.decoded.payload.employeeCode,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
+						const { Partners } = req.app.get('db');
+						const { Wallets } = req.app.get('db');
+						const options = {
+								include: [Partners],
+						};
+						Partners.hasOne(Wallets, { foreignKey: 'id' });
+						Wallets.belongsTo(Partners, { foreignKey: 'userId' });
+						const walletUser = await req.app.get('db').Wallets.findAll(options);
+						return requestHandler.sendSuccess(res, 'Wallet fetched Successfully')({ walletUser });
+				} catch (err) {
+						return requestHandler.sendError(req, res, err);
+				}
+		}
+
 		static async getProfileWallet(req, res) {
 				try {
 						const logData = {
 								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request wallet by id ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -71,7 +93,7 @@ class WalletsController extends BaseController {
 						const logData = {
 								action: 'Update',
 								description: `User ${req.decoded.payload.employeeCode} has request wallet by id ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -110,7 +132,7 @@ class WalletsController extends BaseController {
 						const logData = {
 								action: 'Add',
 								description: `User ${req.decoded.payload.employeeCode} has request topup wallet`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);

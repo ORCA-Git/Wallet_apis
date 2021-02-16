@@ -77,7 +77,7 @@ router.get('/', auth.isAuthenticated, UsersController.getAllUser);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.get('/:id([0-9])', auth.isAuthenticated, UsersController.getUserById);
+router.get('/:id([0-9]+)', auth.isAuthenticated, UsersController.getUserById);
 /**
  * @swagger
  * /users/signUp:
@@ -158,7 +158,7 @@ router.post('/signUp', UsersController.signUp);
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', auth.isAuthenticated, UsersController.deleteById);
+router.delete('/:id([0-9]+)', auth.isAuthenticated, UsersController.deleteById);
 
 /**
  * @swagger

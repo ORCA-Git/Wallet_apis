@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const _ = require('lodash');
 const BaseController = require('../controllers/BaseController');
 const RequestHandler = require('../utils/RequestHandler');
@@ -13,7 +12,7 @@ class TransfersController extends BaseController {
 						const logData = {
 								action: 'get',
 								description: `User ${req.decoded.payload.employeeCode} has request transfer list`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -29,7 +28,7 @@ class TransfersController extends BaseController {
 						const logData = {
 								action: 'get',
 								description: `User ${req.decoded.payload.employeeCode} has request transfer ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -42,12 +41,13 @@ class TransfersController extends BaseController {
 				}
 		}
 
+		// eslint-disable-next-line consistent-return
 		static async createTransfers(req, res) {
 				try {
 						const logData = {
 								action: 'Add',
 								description: `User ${req.decoded.payload.employeeCode} has request add transfer`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -67,7 +67,7 @@ class TransfersController extends BaseController {
 						const logData = {
 								action: 'Delete',
 								description: `User ${req.decoded.payload.employeeCode} has request delete transfer ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -84,7 +84,7 @@ class TransfersController extends BaseController {
 						const logData = {
 								action: 'Update',
 								description: `User ${req.decoded.payload.employeeCode} has request transfer update ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -107,7 +107,7 @@ class TransfersController extends BaseController {
 												requestHandler.throwError(500, 'sequelize error'),
 										)
 										.then(
-												updatedRecored => Promise.resolve(updatedRecored),
+												updatedRecord => Promise.resolve(updatedRecord),
 										);
 						} catch (err) {
 								requestHandler.sendError(req, res, err);

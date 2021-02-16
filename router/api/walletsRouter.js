@@ -54,7 +54,7 @@ const auth = require('../../utils/auth');
  *         schema:
  *           $ref: '#/definitions/partnersObject'
  */
-router.get('/', auth.isAuthenticated, WalletsController.getProfileWallet);
+router.get('/', auth.isAuthenticated, WalletsController.getAllWallet);
 
 /**
  * @swagger

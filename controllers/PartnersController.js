@@ -15,13 +15,20 @@ class UsersController extends BaseController {
 		static async getAllPartner(req, res) {
 				try {
 						const logData = {
-								action: 'get',
+								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request partner list`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
-						const result = await super.getList(req, 'Partners');
+						const { Partners } = req.app.get('db');
+						const { Wallets } = req.app.get('db');
+						const options = {
+								include: [Wallets],
+						};
+						Partners.hasOne(Wallets, { foreignKey: 'userId' });
+						Wallets.belongsTo(Partners, { foreignKey: 'id' });
+						const result = await req.app.get('db').Partners.findAll(options);
 						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
@@ -31,9 +38,9 @@ class UsersController extends BaseController {
 		static async getPartnerById(req, res) {
 				try {
 						const logData = {
-								action: 'get',
+								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request partner by id`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -60,9 +67,9 @@ class UsersController extends BaseController {
 		static async deleteById(req, res) {
 				try {
 						const logData = {
-								action: 'delete',
+								action: 'Delete',
 								description: `User ${req.decoded.payload.employeeCode} has request delete partner list`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -76,9 +83,9 @@ class UsersController extends BaseController {
 		static async getProfile(req, res) {
 				try {
 						const logData = {
-								action: 'get',
+								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has get Profile`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -100,7 +107,7 @@ class UsersController extends BaseController {
 						const logData = {
 								action: 'Add',
 								description: `User ${req.decoded.payload.employeeCode} has request add partner`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);

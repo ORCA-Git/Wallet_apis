@@ -90,7 +90,7 @@ class UsersController extends BaseController {
 						const logData = {
 								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request List Admin User`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -106,7 +106,7 @@ class UsersController extends BaseController {
 						const logData = {
 								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request user ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -117,7 +117,7 @@ class UsersController extends BaseController {
 										.min(1),
 						};
 						const { error } = Joi.validate({ id: reqParam }, schema);
-						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid User Id');
+						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid User Id222');
 
 						const result = await super.getById(req, 'Users');
 						return requestHandler.sendSuccess(res, 'User Data Extracted')({ result });
@@ -131,7 +131,7 @@ class UsersController extends BaseController {
 						const logData = {
 								action: 'Delete',
 								description: `User ${req.decoded.payload.employeeCode} has request delete user ${req.params.id}`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
@@ -147,12 +147,13 @@ class UsersController extends BaseController {
 						const logData = {
 								action: 'Get',
 								description: `User ${req.decoded.payload.employeeCode} has request user profile`,
-								user: req.decoded.payload.id,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
 						const tokenFromHeader = auth.getJwtToken(req);
 						const user = jwt.decode(tokenFromHeader);
+						console.log(user);
 						const options = {
 								where: { id: user.payload.id },
 						};
