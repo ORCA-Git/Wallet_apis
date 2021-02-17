@@ -151,7 +151,7 @@ router.put('/:id', auth.isAuthenticated, WalletsController.updateWalletById);
  */
 router.get('/:id([a-zA-Z0-9]+)', auth.isAuthenticated, WalletsController.getByWalletId);
 
-router.get('/history/:id([a-zA-Z0-9]+)', auth.isAuthenticated, WalletsController.getByWalletId);
+router.get('/history/:id([a-zA-Z0-9]+)', auth.isAuthenticated, WalletsController.getHistoryByWalletId);
 
 /**
  * @swagger

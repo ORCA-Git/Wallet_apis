@@ -18,6 +18,19 @@ class WalletsController extends BaseController {
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
+						const reqParam = req.params.id;
+						const { Users } = req.app.get('db');
+						const { Wallet_history } = req.app.get('db');
+						Users.hasOne(Wallet_history, { foreignKey: 'id' });
+						Wallet_history.belongsTo(Users, { foreignKey: 'user' });
+						// const walletUser = await req.app.get('db').Wallets.findAll(options);
+						const options = {
+								where: { walletId: reqParam },
+								include: [Users],
+						};
+						const result = await req.app.get('db')
+								.Wallet_history
+								.findAll(options);
 						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
@@ -39,7 +52,10 @@ class WalletsController extends BaseController {
 						Partners.hasOne(Wallets, { foreignKey: 'id' });
 						Wallets.belongsTo(Partners, { foreignKey: 'userId' });
 						// const walletUser = await req.app.get('db').Wallets.findAll(options);
-						const options = { where: { walletId: reqParam }, include: [Partners] };
+						const options = {
+								where: { walletId: reqParam },
+								include: [Partners],
+						};
 						const result = await super.getByOptions(req, 'Wallets', options);
 						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
 				} catch (error) {
@@ -79,7 +95,9 @@ class WalletsController extends BaseController {
 						};
 						Partners.hasOne(Wallets, { foreignKey: 'id' });
 						Wallets.belongsTo(Partners, { foreignKey: 'userId' });
-						const walletUser = await req.app.get('db').Wallets.findAll(options);
+						const walletUser = await req.app.get('db')
+								.Wallets
+								.findAll(options);
 						return requestHandler.sendSuccess(res, 'Wallet fetched Successfully')({ walletUser });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
@@ -100,7 +118,9 @@ class WalletsController extends BaseController {
 						const options = {
 								where: { userId: user.payload.id },
 						};
-						const walletUser = await req.app.get('db').Wallets.findAll(options);
+						const walletUser = await req.app.get('db')
+								.Wallets
+								.findAll(options);
 						return requestHandler.sendSuccess(res, 'Wallet fetched Successfully')({ walletUser });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
@@ -166,6 +186,7 @@ class WalletsController extends BaseController {
 								req.params.id = req.body.partnerId;
 								await super.getById(req, 'Partners');
 								const result = await super.getByOptions(req, 'Wallets', options);
+								console.log('RES', result);
 								let balance = result.dataValues.amount;
 								balance += Number(req.body.amount);
 								const data = {
@@ -181,12 +202,19 @@ class WalletsController extends BaseController {
 												},
 										})
 										.then(
-												requestHandler.throwIf(r => !r, 500, 'Internal server error', 'something went wrong couldnt update data'),
+												requestHandler.throwIf(r => !r, 500, 'Internal server error', 'something went wrong couldn\'t update data'),
 												requestHandler.throwError(500, 'sequelize error'),
 										)
 										.then(
-												updatedRecored => Promise.resolve(updatedRecored),
+												updatedRecord => Promise.resolve(updatedRecord),
 										);
+								const	logTopup = {
+										walletId: req.body.walletId,
+										amount: req.body.amount,
+										user: req.decoded.payload.id,
+										createdDate: new Date(),
+								};
+								await super.create(req, 'Wallet_history', logTopup);
 						} catch (err) {
 								requestHandler.sendError(req, res, err);
 						}
