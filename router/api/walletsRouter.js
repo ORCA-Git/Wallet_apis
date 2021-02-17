@@ -149,7 +149,9 @@ router.put('/:id', auth.isAuthenticated, WalletsController.updateWalletById);
  *         schema:
  *           $ref: '#/definitions/wallets'
  */
-router.get('/:id', auth.isAuthenticated, WalletsController.getByWalletId);
+router.get('/:id([a-zA-Z0-9]+)', auth.isAuthenticated, WalletsController.getByWalletId);
+
+router.get('/history/:id([a-zA-Z0-9]+)', auth.isAuthenticated, WalletsController.getByWalletId);
 
 /**
  * @swagger

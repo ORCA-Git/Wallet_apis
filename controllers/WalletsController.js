@@ -9,17 +9,37 @@ const logger = new Logger();
 const requestHandler = new RequestHandler(logger);
 
 class WalletsController extends BaseController {
+		static async getHistoryByWalletId(req, res) {
+				try {
+						const logData = {
+								action: 'Get',
+								description: `User ${req.decoded.payload.employeeCode} has request wallet history by id ${req.params.id}`,
+								user: req.decoded.payload.employeeCode,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
+						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
+				} catch (error) {
+						return requestHandler.sendError(req, res, error);
+				}
+		}
+
 		static async getByWalletId(req, res) {
 				try {
 						const logData = {
 								action: 'Get',
-								description: `User ${req.decoded.payload.employeeCode} has request wallet list`,
-								user: req.decoded.payload.id,
+								description: `User ${req.decoded.payload.employeeCode} has request wallet id ${req.params.id}`,
+								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
 						const reqParam = req.params.id;
-						const options = { where: { walletId: reqParam } };
+						const { Partners } = req.app.get('db');
+						const { Wallets } = req.app.get('db');
+						Partners.hasOne(Wallets, { foreignKey: 'id' });
+						Wallets.belongsTo(Partners, { foreignKey: 'userId' });
+						// const walletUser = await req.app.get('db').Wallets.findAll(options);
+						const options = { where: { walletId: reqParam }, include: [Partners] };
 						const result = await super.getByOptions(req, 'Wallets', options);
 						return requestHandler.sendSuccess(res, 'Wallets Data Extracted')({ result });
 				} catch (error) {
