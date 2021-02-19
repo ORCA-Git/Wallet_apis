@@ -188,7 +188,10 @@ class UsersController extends BaseController {
 						req.body.minTransaction = req.body.minAmtTransaction;
 						req.body.maxTransaction = req.body.maxAmtTransaction;
 						req.body.limitTransactionPerDay = req.body.limitTransaction;
-						await super.updateById(req, 'Wallets', req.body);
+						const options = {
+								userId: req.params.id,
+						};
+						await super.updateByOptions(req, 'Wallets', req.body, options);
 						requestHandler.sendSuccess(res, 'Success Update Partner', 200)();
 				} catch (err) {
 						requestHandler.sendError(req, res, err);

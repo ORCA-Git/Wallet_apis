@@ -16,7 +16,18 @@ class TransfersController extends BaseController {
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
-						const result = await super.getList(req, 'Transfers');
+						const { Partners } = req.app.get('db');
+						const { Transfers } = req.app.get('db');
+						Partners.hasOne(Partners, { foreignKey: 'id' });
+						Transfers.belongsTo(Partners, { foreignKey: 'from_partner' });
+						// const walletUser = await req.app.get('db').Wallets.findAll(options);
+						const options = {
+								include: [Partners],
+						};
+						const result = await req.app.get('db')
+								.Transfers
+								.findAll(options);
+						// const result = await super.getList(req, 'Transfers');
 						return requestHandler.sendSuccess(res, 'Transfer Data Extracted')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);

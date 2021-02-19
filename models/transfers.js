@@ -12,6 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     sms: DataTypes.TEXT,
     coupon: DataTypes.STRING,
     transaction_date: DataTypes.DATE,
+    customer_id: DataTypes.STRING,
+    customer_tel: DataTypes.STRING,
+    customer_subdistrict: DataTypes.STRING,
+    customer_country: DataTypes.STRING,
+    customer_postcode: DataTypes.STRING,
+    customer_name: DataTypes.STRING,
+    customer_address: DataTypes.STRING,
+    customer_state: DataTypes.STRING,
+    customer_remark: DataTypes.STRING,
+    slip: DataTypes.STRING,
   }, {});
   Transfers.associate = function (models) {
     // associations can be defined here

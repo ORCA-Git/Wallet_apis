@@ -43,6 +43,16 @@ module.exports = {
       transaction_date: {
         type: Sequelize.DATE,
       },
+      customer_id: Sequelize.STRING,
+      customer_tel: Sequelize.STRING,
+      customer_subdistrict: Sequelize.STRING,
+      customer_country: Sequelize.STRING,
+      customer_postcode: Sequelize.STRING,
+      customer_name: Sequelize.STRING,
+      customer_address: Sequelize.STRING,
+      customer_state: Sequelize.STRING,
+      customer_remark: Sequelize.STRING,
+      slip: Sequelize.STRING,
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

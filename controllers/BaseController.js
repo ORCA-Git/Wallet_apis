@@ -110,6 +110,27 @@ class BaseController {
 				return result;
 		}
 
+		static async updateByOptions(req, modelName, data, options) {
+				let result;
+
+				try {
+						result = await req.app.get('db')[modelName]
+								.update(data, {
+										where: options,
+								})
+								.then(
+										errHandler.throwIf(r => !r, 500, 'Internal server error', 'something went wrong couldnt update data'),
+										errHandler.throwError(500, 'sequelize error'),
+								)
+								.then(
+										updatedRecored => Promise.resolve(updatedRecored),
+								);
+				} catch (err) {
+						return Promise.reject(err);
+				}
+				return result;
+		}
+
 		static async updateByCustomWhere(req, modelName, data, options) {
 				let result;
 
