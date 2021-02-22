@@ -186,7 +186,6 @@ class WalletsController extends BaseController {
 								req.params.id = req.body.partnerId;
 								await super.getById(req, 'Partners');
 								const result = await super.getByOptions(req, 'Wallets', options);
-								console.log('RES', result);
 								let balance = result.dataValues.amount;
 								balance += Number(req.body.amount);
 								const data = {
@@ -210,6 +209,7 @@ class WalletsController extends BaseController {
 										);
 								const	logTopup = {
 										walletId: req.body.walletId,
+										typeData: 'TOPUP',
 										amount: req.body.amount,
 										user: req.decoded.payload.id,
 										createdDate: new Date(),

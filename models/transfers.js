@@ -2,6 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const Transfers = sequelize.define('Transfers', {
     order_no: DataTypes.STRING,
     invoice: DataTypes.STRING,
+    partnerId: DataTypes.STRING,
+    amount: DataTypes.DOUBLE,
     rate: DataTypes.DOUBLE,
     fee: DataTypes.DOUBLE,
     receipt_date: DataTypes.DATE,
@@ -12,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     sms: DataTypes.TEXT,
     coupon: DataTypes.STRING,
     transaction_date: DataTypes.DATE,
+    customer_bank: DataTypes.STRING,
+    customer_account: DataTypes.STRING,
     customer_id: DataTypes.STRING,
     customer_tel: DataTypes.STRING,
     customer_subdistrict: DataTypes.STRING,
