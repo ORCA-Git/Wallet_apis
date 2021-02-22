@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { readFile } = require('fs').promises;
+const fs = require('fs').promises;
 const BaseController = require('../controllers/BaseController');
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
@@ -55,7 +55,7 @@ class TransfersController extends BaseController {
 						};
 						Transfers.belongsTo(Wallets, { foreignKey: 'partnerId', targetKey: 'userId' });
 						const result = await super.getByOptions(req, 'Transfers', options);
-						const contents = await readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
+						const contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
 						const image = {
 								slip: contents,
 						};
