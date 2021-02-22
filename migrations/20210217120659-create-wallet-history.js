@@ -10,6 +10,9 @@ module.exports = {
       walletId: {
         type: Sequelize.STRING,
       },
+      typeData: {
+          type: Sequelize.STRING,
+      },
       amount: {
         type: Sequelize.STRING,
       },

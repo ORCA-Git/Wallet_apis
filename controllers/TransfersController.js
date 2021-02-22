@@ -25,8 +25,8 @@ class TransfersController extends BaseController {
 										['transaction_date', 'DESC'],
 								],
 						};
-						Partners.hasOne(Partners, { foreignKey: 'id' });
-						Transfers.belongsTo(Partners, { foreignKey: 'from_partner' });
+						Partners.hasMany(Transfers, { foreignKey: 'id', targetKey: 'id' });
+						Transfers.belongsTo(Partners, { foreignKey: 'partnerId' });
 						const result = await super.getList(req, 'Transfers', options);
 						return requestHandler.sendSuccess(res, 'Transfer Data Extracted')({ result });
 				} catch (err) {
@@ -43,8 +43,17 @@ class TransfersController extends BaseController {
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
+						const { Wallets } = req.app.get('db');
+						const { Transfers } = req.app.get('db');
 						const reqParam = req.params.id;
-						const options = { where: { id: reqParam } };
+						const options = {
+								include: [Wallets],
+								where: { id: reqParam },
+								order: [
+										['transaction_date', 'DESC'],
+								],
+						};
+						Transfers.belongsTo(Wallets, { foreignKey: 'partnerId', targetKey: 'userId' });
 						const result = await super.getByOptions(req, 'Transfers', options);
 						const contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
 						const image = {
@@ -75,6 +84,44 @@ class TransfersController extends BaseController {
 						await super.create(req, 'activity_log', logData);
 						const createdTransfers = await super.create(req, 'Transfers');
 						if (!(_.isNull(createdTransfers))) {
+								const optionsDeduct = {
+										where: {
+												userId: req.body.partnerId,
+												walletId: req.body.walletID,
+										},
+								};
+								req.params.id = req.body.partnerId;
+								await super.getById(req, 'Partners');
+								const result = await super.getByOptions(req, 'Wallets', optionsDeduct);
+								let balance = result.dataValues.amount;
+								balance -= Number(req.body.amount);
+								const data = {
+										updated_at: new Date(),
+										amount: balance,
+								};
+								await req.app.get('db')
+										.Wallets
+										.update(data, {
+												where: {
+														userId: req.body.partnerId,
+														walletId: req.body.walletID,
+												},
+										})
+										.then(
+												requestHandler.throwIf(r => !r, 500, 'Internal server error', 'something went wrong couldn\'t update data'),
+												requestHandler.throwError(500, 'sequelize error'),
+										)
+										.then(
+												updatedRecord => Promise.resolve(updatedRecord),
+										);
+								const	logTopup = {
+										walletId: req.body.walletID,
+										typeData: 'DEDUCT',
+										amount: req.body.amount,
+										user: req.decoded.payload.id,
+										createdDate: new Date(),
+								};
+								await super.create(req, 'Wallet_history', logTopup);
 								requestHandler.sendSuccess(res, 'Success Create Transfer', 201)();
 						} else {
 								requestHandler.throwError(422, 'Unprocessable Entity', 'unable to process the contained instructions')();

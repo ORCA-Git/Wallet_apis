@@ -13,6 +13,10 @@ module.exports = {
       invoice: {
         type: Sequelize.STRING,
       },
+      partnerId: Sequelize.STRING,
+      amount: {
+          type: Sequelize.DOUBLE,
+      },
       rate: {
         type: Sequelize.DOUBLE,
       },
@@ -43,6 +47,8 @@ module.exports = {
       transaction_date: {
         type: Sequelize.DATE,
       },
+      customer_bank: Sequelize.STRING,
+      customer_account: Sequelize.STRING,
       customer_id: Sequelize.STRING,
       customer_tel: Sequelize.STRING,
       customer_subdistrict: Sequelize.STRING,
