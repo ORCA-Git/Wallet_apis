@@ -140,7 +140,7 @@ class UsersController extends BaseController {
 								delete req.body.expireDate;
 						}
 						req.body.code = data.partnerCode;
-						req.body.uAddress = req.body.Address;
+						req.body.uAddress = req.body.address;
 						data.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
 						const createdUser = await super.create(req, 'Partners');
 						if (!(_.isNull(createdUser))) {
