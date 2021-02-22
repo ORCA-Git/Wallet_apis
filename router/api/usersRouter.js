@@ -135,6 +135,7 @@ router.get('/:id([0-9]+)', auth.isAuthenticated, UsersController.getUserById);
 
 
 router.post('/signUp', UsersController.signUp);
+router.put('/:id([0-9]+)', auth.isAuthenticated, UsersController.updateById);
 /**
  * @swagger
  * /users/{userId}:

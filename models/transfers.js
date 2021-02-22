@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     customer_state: DataTypes.STRING,
     customer_remark: DataTypes.STRING,
     slip: DataTypes.STRING,
+    status: DataTypes.STRING,
   }, {});
   Transfers.associate = function (models) {
     // associations can be defined here

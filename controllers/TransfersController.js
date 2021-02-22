@@ -82,6 +82,7 @@ class TransfersController extends BaseController {
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
+						req.body.status = 'APPROVED';
 						const createdTransfers = await super.create(req, 'Transfers');
 						if (!(_.isNull(createdTransfers))) {
 								const optionsDeduct = {
@@ -117,7 +118,7 @@ class TransfersController extends BaseController {
 										);
 								const	logTopup = {
 										walletId: req.body.walletID,
-										typeData: 'DEDUCT',
+										typeData: 'CANCEL TRANSACTION',
 										amount: req.body.amount,
 										user: req.decoded.payload.id,
 										createdDate: new Date(),
@@ -140,8 +141,44 @@ class TransfersController extends BaseController {
 								user: req.decoded.payload.employeeCode,
 								date: new Date(),
 						};
+						req.body.status = 'CANCEL';
+						await super.updateById(req, 'Transfers', req.body);
+						const val = await super.getById(req, 'Transfers');
+						const optionsRefund = {
+								where: {
+										userId: val.dataValues.partnerId,
+								},
+						};
+						const result = await super.getByOptions(req, 'Wallets', optionsRefund);
+						let balance = result.dataValues.amount;
+						balance += Number(val.dataValues.amount);
+						const data = {
+								updated_at: new Date(),
+								amount: balance,
+						};
+						await req.app.get('db')
+								.Wallets
+								.update(data, {
+										where: {
+												userId: val.dataValues.partnerId,
+										},
+								})
+								.then(
+										requestHandler.throwIf(r => !r, 500, 'Internal server error', 'something went wrong couldn\'t update data'),
+										requestHandler.throwError(500, 'sequelize error'),
+								)
+								.then(
+										updatedRecord => Promise.resolve(updatedRecord),
+								);
+						const	logTopup = {
+								walletId: result.dataValues.walletId,
+								typeData: 'REFUND',
+								amount: val.dataValues.amount,
+								user: req.decoded.payload.id,
+								createdDate: new Date(),
+						};
+						await super.create(req, 'Wallet_history', logTopup);
 						await super.create(req, 'activity_log', logData);
-						const result = await super.deleteById(req, 'Transfers');
 						return requestHandler.sendSuccess(res, 'Transfers Deleted Successfully')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);

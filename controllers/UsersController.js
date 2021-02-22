@@ -164,6 +164,44 @@ class UsersController extends BaseController {
 						return requestHandler.sendError(req, res, err);
 				}
 		}
+
+		static async updateById(req, res) {
+				try {
+						const logData = {
+								action: 'Update',
+								description: `User ${req.decoded.employeeCode} has request update users ${req.params.id}`,
+								user: req.decoded.payload.id,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
+						const data = req.body;
+						const schema = {
+								username: Joi.string()
+										.required(),
+								password: Joi.string()
+										.required(),
+								employeeCode: Joi.string()
+										.required(),
+								employeeName: Joi.string()
+										.required(),
+								idCard: Joi.string()
+										.required(),
+						};
+
+						const { error } = Joi.validate({
+								username: data.username,
+								password: data.password,
+								employeeCode: data.employeeCode,
+								employeeName: data.employeeName,
+								idCard: data.idCard,
+						}, schema);
+						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
+						await super.updateById(req, 'Users', data);
+						requestHandler.sendSuccess(res, 'Update user success', 201)();
+				} catch (err) {
+						requestHandler.sendError(req, res, err);
+				}
+		}
 }
 
 module.exports = UsersController;
