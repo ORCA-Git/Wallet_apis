@@ -1,7 +1,19 @@
 const router = require('express')
 		.Router();
+const multer = require('multer');
 const TransfersController = require('../../controllers/TransfersController');
 const auth = require('../../utils/auth');
+
+const storage = multer.diskStorage({
+		destination(req, file, cb) {
+				cb(null, 'uploads');
+		},
+		filename(req, file, cb) {
+				const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+				cb(null, `${file.fieldname}-${uniqueSuffix}.jpg`);
+		},
+});
+const upload = multer({ dest: 'uploads', storage });
 /**
  * @swagger
  * definitions:
@@ -88,7 +100,7 @@ router.get('/', auth.isAuthenticated, TransfersController.getAllTransfers);
  * 		 404:
  * 		   description: the url you are trying to reach is not hosted on our server
  */
-router.post('/', auth.isAuthenticated, TransfersController.createTransfers);
+router.post('/', auth.isAuthenticated, upload.any(), TransfersController.createTransfers);
 /**
  * @swagger
  * /transfers/{transferId}:
@@ -135,7 +147,7 @@ router.put('/:id', auth.isAuthenticated, TransfersController.updateTransferById)
  *     produces:
  *       - application/json
  *     parameters:
- *      - name: walletId
+ *      - name: transferId
  *        description: string id of the wallet to get
  *        in: path
  *        required: true
@@ -145,9 +157,9 @@ router.put('/:id', auth.isAuthenticated, TransfersController.updateTransferById)
  *       200:
  *         description: a single user object
  *         schema:
- *           $ref: '#/definitions/wallets'
+ *           $ref: '#/definitions/Transfers'
  */
-router.get('/:id', auth.isAuthenticated, TransfersController.getByTransferId);
+router.get('/:id([0-9]+)', auth.isAuthenticated, TransfersController.getByTransferId);
 
 /**
  * @swagger

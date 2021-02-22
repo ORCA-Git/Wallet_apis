@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const fs = require('fs').promises;
 const BaseController = require('../controllers/BaseController');
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
@@ -18,16 +19,15 @@ class TransfersController extends BaseController {
 						await super.create(req, 'activity_log', logData);
 						const { Partners } = req.app.get('db');
 						const { Transfers } = req.app.get('db');
-						Partners.hasOne(Partners, { foreignKey: 'id' });
-						Transfers.belongsTo(Partners, { foreignKey: 'from_partner' });
-						// const walletUser = await req.app.get('db').Wallets.findAll(options);
 						const options = {
 								include: [Partners],
+								order: [
+										['transaction_date', 'DESC'],
+								],
 						};
-						const result = await req.app.get('db')
-								.Transfers
-								.findAll(options);
-						// const result = await super.getList(req, 'Transfers');
+						Partners.hasOne(Partners, { foreignKey: 'id' });
+						Transfers.belongsTo(Partners, { foreignKey: 'from_partner' });
+						const result = await super.getList(req, 'Transfers', options);
 						return requestHandler.sendSuccess(res, 'Transfer Data Extracted')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
@@ -46,7 +46,11 @@ class TransfersController extends BaseController {
 						const reqParam = req.params.id;
 						const options = { where: { id: reqParam } };
 						const result = await super.getByOptions(req, 'Transfers', options);
-						return requestHandler.sendSuccess(res, 'Transfers Data Extracted')({ result });
+						const contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
+						const image = {
+								slip: contents,
+						};
+						return requestHandler.sendSuccess(res, 'Transfers Data Extracted')({ result, image });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
 				}
@@ -54,6 +58,13 @@ class TransfersController extends BaseController {
 
 		// eslint-disable-next-line consistent-return
 		static async createTransfers(req, res) {
+				req.body = JSON.parse(req.body.data);
+				req.body.from_partner = req.body.partnerCode;
+				if (req.files[0]) {
+						req.body.slip = req.files[0].filename;
+				} else {
+						delete req.body.slip;
+				}
 				try {
 						const logData = {
 								action: 'Add',

@@ -25,10 +25,13 @@ class UsersController extends BaseController {
 						const { Wallets } = req.app.get('db');
 						const options = {
 								include: [Wallets],
+								order: [
+										['joinDate', 'DESC'],
+								],
 						};
 						Partners.hasOne(Wallets, { foreignKey: 'userId' });
 						Wallets.belongsTo(Partners, { foreignKey: 'id' });
-						const result = await req.app.get('db').Partners.findAll(options);
+						const result = await super.getList(req, 'Partners', options);
 						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ result });
 				} catch (err) {
 						return requestHandler.sendError(req, res, err);
@@ -137,6 +140,7 @@ class UsersController extends BaseController {
 								delete req.body.expireDate;
 						}
 						req.body.code = data.partnerCode;
+						req.body.uAddress = req.body.Address;
 						data.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
 						const createdUser = await super.create(req, 'Partners');
 						if (!(_.isNull(createdUser))) {
@@ -182,7 +186,8 @@ class UsersController extends BaseController {
 						req.body.updated_at = new Date();
 						req.params.id = reqParam;
 						req.body.code = req.body.partnerCode;
-						req.body.uAddress = req.body.address;
+						req.body.uAddress = req.body.Address;
+						console.log('BODY', req.body);
 						await super.updateById(req, 'Partners', req.body);
 						req.body.amount = req.body.walletAmount;
 						req.body.minTransaction = req.body.minAmtTransaction;

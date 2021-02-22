@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   WalletHistory.associate = function (models) {
     // associations can be defined here
-    console.log(models);
   };
   return WalletHistory;
 };

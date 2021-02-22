@@ -10,6 +10,7 @@ const logger = new Logger();
 const app = express();
 app.set('config', config); // the system configrationsx
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(require('method-override')());
 
 app.use(compression());
@@ -33,7 +34,7 @@ app.use((req, res, next) => {
 	logger.log(logString, 'info');
 	next();
 });
-
+// app.use(require('../utils/multer'));
 app.use(require('../router'));
 
 app.use((req, res, next) => {
