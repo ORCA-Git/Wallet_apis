@@ -91,6 +91,7 @@ class TransfersController extends BaseController {
 										},
 								};
 								req.params.id = req.body.partnerId;
+								req.body.submited = req.body.submitted;
 								await super.getById(req, 'Partners');
 								const result = await super.getByOptions(req, 'Wallets', optionsDeduct);
 								let balance = result.dataValues.amount;
