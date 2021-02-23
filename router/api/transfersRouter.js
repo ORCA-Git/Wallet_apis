@@ -184,6 +184,6 @@ router.get('/:id([0-9]+)', auth.isAuthenticated, TransfersController.getByTransf
  *         schema:
  *           $ref: '#/definitions/users'
  */
-router.delete('/:id([0-9])', auth.isAuthenticated, TransfersController.deleteById);
+router.delete('/:id([0-9]+)', auth.isAuthenticated, TransfersController.deleteById);
 
 module.exports = router;

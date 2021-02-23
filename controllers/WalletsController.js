@@ -27,6 +27,9 @@ class WalletsController extends BaseController {
 						const options = {
 								where: { walletId: reqParam },
 								include: [Users],
+								order: [
+										['createdDate', 'DESC'],
+								],
 						};
 						const result = await req.app.get('db')
 								.Wallet_history

@@ -56,7 +56,6 @@ class TransfersController extends BaseController {
 						Transfers.belongsTo(Wallets, { foreignKey: 'partnerId', targetKey: 'userId' });
 						const result = await super.getByOptions(req, 'Transfers', options);
 						let contents = null;
-						console.log(result.dataValues.slip);
 						if (result.dataValues.slip) {
 								contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
 						}
@@ -87,6 +86,7 @@ class TransfersController extends BaseController {
 						};
 						await super.create(req, 'activity_log', logData);
 						req.body.status = 'APPROVED';
+						req.body.submited = req.body.submitted;
 						const createdTransfers = await super.create(req, 'Transfers');
 						if (!(_.isNull(createdTransfers))) {
 								const optionsDeduct = {
@@ -96,7 +96,6 @@ class TransfersController extends BaseController {
 										},
 								};
 								req.params.id = req.body.partnerId;
-								req.body.submited = req.body.submitted;
 								await super.getById(req, 'Partners');
 								const result = await super.getByOptions(req, 'Wallets', optionsDeduct);
 								let balance = result.dataValues.amount;
