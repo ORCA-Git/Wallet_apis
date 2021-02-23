@@ -56,7 +56,8 @@ class TransfersController extends BaseController {
 						Transfers.belongsTo(Wallets, { foreignKey: 'partnerId', targetKey: 'userId' });
 						const result = await super.getByOptions(req, 'Transfers', options);
 						let contents = null;
-						if (result.dataValues.slip !== null || result.dataValues.slip !== '') {
+						console.log(result.dataValues.slip);
+						if (result.dataValues.slip) {
 								contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
 						}
 						const image = {
