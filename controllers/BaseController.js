@@ -153,8 +153,11 @@ class BaseController {
 		}
 
 		static async getList(req, modelName, options) {
-				const { page } = req.query;
-
+				const { page, limit } = req.query;
+				let limitPerPage = 20;
+				if (limit) {
+						limitPerPage = parseInt(limit, 10);
+				}
 				let results;
 				try {
 						if (_.isUndefined(options)) {
@@ -171,13 +174,13 @@ class BaseController {
 								} else {
 										options = _.extend({}, options, {
 												offset: 20 * (page - 1),
-												limit: 20,
+												limit: limitPerPage,
 										});
 								}
 						} else {
 								options = _.extend({}, options, {}); // extend it so we can't mutate
 						}
-
+						console.log(options);
 						results = await req.app.get('db')[modelName]
 								.findAll(options)
 								.then(
