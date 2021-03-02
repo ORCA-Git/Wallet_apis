@@ -135,6 +135,62 @@ router.get('/:id([0-9]+)', auth.isAuthenticated, UsersController.getUserById);
 
 
 router.post('/signUp', UsersController.signUp);
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     tags:
+ *       - Users
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - name: id
+ *       description: string id of the wallet
+ *       in: path
+ *       required: true
+ *       type: string
+ *       minimum: 1
+ *       schema:
+ *         type: object
+ *         required:
+ *           - employeeCode
+ *           - employeeName
+ *           - idCard
+ *           - username
+ *           - password
+ *         properties:
+ *           username:
+ *             type: string
+ *           password:
+ *             type: string
+ *           employeeCode:
+ *             type: string
+ *           employeeName:
+ *             type: string
+ *           idCard:
+ *             type: string
+ *           nickName:
+ *             type: string
+ *           tel:
+ *             type: string
+ *           email:
+ *             type: string
+ *           birthDate:
+ *             type: string
+ *           age:
+ *             type: string
+ *           startJobDate:
+ *             type: string
+ *           Role:
+ *             type: string
+ *           Address:
+ *             type: string
+ *           remark:
+ *             type: string
+ *     responses:
+ *       201:
+ *         description: send an email to the user with the auto generated password and register him
+ */
 router.put('/:id([0-9]+)', auth.isAuthenticated, UsersController.updateById);
 /**
  * @swagger

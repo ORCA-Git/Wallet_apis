@@ -150,7 +150,30 @@ router.put('/:id', auth.isAuthenticated, WalletsController.updateWalletById);
  *           $ref: '#/definitions/wallets'
  */
 router.get('/:id([a-zA-Z0-9!@#+=._-]+)', auth.isAuthenticated, WalletsController.getByWalletId);
-
+/**
+ * @swagger
+ * /history/{walletId}:
+ *   get:
+ *     tags:
+ *       - Wallets
+ *     description: get specify wallet
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *      - name: walletId
+ *        description: string id of the wallet to get
+ *        in: path
+ *        required: true
+ *        type: string
+ *        minimum: 1
+ *     responses:
+ *       200:
+ *         description: a single user object
+ *         schema:
+ *           $ref: '#/definitions/wallets'
+ */
 router.get('/history/:id([a-zA-Z0-9!@#+=._-]+)', auth.isAuthenticated, WalletsController.getHistoryByWalletId);
 
 /**
