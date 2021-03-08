@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const fs = require('fs').promises;
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
 
@@ -202,6 +203,11 @@ class BaseController {
 						return Promise.reject(err);
 				}
 				return result;
+		}
+
+		static async fileToBase64(fileName) {
+				const fileB64 = await fs.readFile(`uploads/${fileName}`, { encoding: 'base64' });
+				return Promise.resolve(fileB64);
 		}
 }
 

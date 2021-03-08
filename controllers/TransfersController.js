@@ -55,28 +55,31 @@ class TransfersController extends BaseController {
 						};
 						Transfers.belongsTo(Wallets, { foreignKey: 'partnerId', targetKey: 'userId' });
 						const result = await super.getByOptions(req, 'Transfers', options);
-						let contents = null;
-						if (result.dataValues.slip) {
-								contents = await fs.readFile(`uploads/${result.dataValues.slip}`, { encoding: 'base64' });
-						}
-						const image = {
-								slip: contents,
+						const optionImg = {
+								where: { tranferId: reqParam },
 						};
+						const resultImage = await super.getList(req, 'TransferFile', optionImg);
+						const image = [];
+						if (resultImage) {
+								for (const data of resultImage) {
+										const contents = await fs.readFile(`uploads/${data.dataValues.fileName}`, { encoding: 'base64' });
+										image.push(contents);
+								}
+						}
+
+
 						return requestHandler.sendSuccess(res, 'Transfers Data Extracted')({ result, image });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
 				}
 		}
 
+
 		// eslint-disable-next-line consistent-return
 		static async createTransfers(req, res) {
 				req.body = JSON.parse(req.body.data);
 				req.body.from_partner = req.body.partnerCode;
-				if (req.files[0]) {
-						req.body.slip = req.files[0].filename;
-				} else {
-						delete req.body.slip;
-				}
+				delete req.body.slip;
 				try {
 						const logData = {
 								action: 'Add',
@@ -89,6 +92,17 @@ class TransfersController extends BaseController {
 						req.body.submited = req.body.submitted;
 						const createdTransfers = await super.create(req, 'Transfers');
 						if (!(_.isNull(createdTransfers))) {
+								req.body.tranferId = createdTransfers.dataValues.id;
+								if (req.files.length > 0) {
+										// eslint-disable-next-line no-plusplus
+										for (let i = 0; i < req.files.length; i++) {
+												req.body.fileName = req.files[i].filename;
+												// eslint-disable-next-line no-await-in-loop
+												await super.create(req, 'TransferFile');
+										}
+								} else {
+										delete req.body.slip;
+								}
 								const optionsDeduct = {
 										where: {
 												userId: req.body.partnerId,
@@ -121,7 +135,7 @@ class TransfersController extends BaseController {
 										);
 								const	logTopup = {
 										walletId: req.body.walletID,
-										typeData: 'CANCEL TRANSACTION',
+										typeData: 'DEDUCT TRANSACTION',
 										amount: req.body.amount,
 										user: req.decoded.payload.id,
 										createdDate: new Date(),
