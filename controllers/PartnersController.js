@@ -59,7 +59,12 @@ class UsersController extends BaseController {
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 
 						const partner = await super.getById(req, 'Partners');
-						const contents = await fs.readFile(`uploads/${partner.dataValues.document}`, { encoding: 'base64' });
+						let contents = null;
+						if (partner.dataValues.document != null || partner.dataValues.document !== '') {
+								contents = await fs.readFile(`uploads/${partner.dataValues.document}`, { encoding: 'base64' });
+						} else {
+								contents = null;
+						}
 						const image = {
 								image: contents,
 						};
