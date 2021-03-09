@@ -50,6 +50,9 @@ module.exports = {
     Address: {
       type: Sequelize.TEXT,
     },
+    document: {
+      type: Sequelize.TEXT,
+    },
     createdAt:
         {
           type: Sequelize.DATE,

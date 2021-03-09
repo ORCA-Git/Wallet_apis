@@ -50,7 +50,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: true,
     },
-    uAddress: {
+    Address: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    document: {
       type: DataTypes.TEXT,
       allowNull: true,
     },

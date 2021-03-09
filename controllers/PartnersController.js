@@ -2,11 +2,13 @@ const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const fs = require('fs').promises;
 const BaseController = require('../controllers/BaseController');
 const RequestHandler = require('../utils/RequestHandler');
 const Logger = require('../utils/logger');
 const auth = require('../utils/auth');
 const config = require('../config/appconfig');
+
 
 const logger = new Logger();
 const requestHandler = new RequestHandler(logger);
@@ -57,11 +59,15 @@ class UsersController extends BaseController {
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 
 						const partner = await super.getById(req, 'Partners');
+						const contents = await fs.readFile(`uploads/${partner.dataValues.document}`, { encoding: 'base64' });
+						const image = {
+								image: contents,
+						};
 						const options = {
 								where: { userId: req.params.id },
 						};
 						const wallet = await super.getByCustomOptions(req, 'Wallets', options);
-						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ partner, wallet });
+						return requestHandler.sendSuccess(res, 'Partners Data Extracted')({ partner, wallet, image });
 				} catch (error) {
 						return requestHandler.sendError(req, res, error);
 				}
@@ -114,7 +120,7 @@ class UsersController extends BaseController {
 								date: new Date(),
 						};
 						await super.create(req, 'activity_log', logData);
-						const data = req.body;
+						req.body = JSON.parse(req.body.data);
 						const schema = {
 								partnerCode: Joi.string()
 										.required(),
@@ -123,11 +129,11 @@ class UsersController extends BaseController {
 						};
 
 						const { error } = Joi.validate({
-							partnerCode: data.partnerCode,
-							partnerName: data.partnerName,
+							partnerCode: req.body.partnerCode,
+							partnerName: req.body.partnerName,
 						}, schema);
 						requestHandler.validateJoi(error, 400, 'bad Request', error ? error.details[0].message : '');
-						const options = { where: { username: data.username } };
+						const options = { where: { username: req.body.username } };
 						const user = await super.getByOptions(req, 'Partners', options);
 
 						if (user) {
@@ -139,9 +145,14 @@ class UsersController extends BaseController {
 						if (req.body.expireDate === '') {
 								delete req.body.expireDate;
 						}
-						req.body.code = data.partnerCode;
-						req.body.uAddress = req.body.address;
-						data.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
+						if (req.files[0]) {
+								req.body.document = req.files[0].filename;
+						} else {
+								delete req.body.document;
+						}
+						req.body.code = req.body.partnerCode;
+						req.body.Address = req.body.address;
+						req.body.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
 						const createdUser = await super.create(req, 'Partners');
 						if (!(_.isNull(createdUser))) {
 								req.body.userId = createdUser.dataValues.id;
@@ -180,14 +191,18 @@ class UsersController extends BaseController {
 										.min(1),
 						};
 						const { error } = Joi.validate({ id: reqParam }, schema);
+						req.body = JSON.parse(req.body.data);
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 						await super.getById(req, 'Partners');
 						delete req.body.password;
 						req.body.updated_at = new Date();
 						req.params.id = reqParam;
 						req.body.code = req.body.partnerCode;
-						req.body.uAddress = req.body.Address;
-						console.log('BODY', req.body);
+						if (req.files[0]) {
+								req.body.document = req.files[0].filename;
+						} else {
+								delete req.body.document;
+						}
 						await super.updateById(req, 'Partners', req.body);
 						req.body.amount = req.body.walletAmount;
 						req.body.minTransaction = req.body.minAmtTransaction;
