@@ -181,7 +181,6 @@ class BaseController {
 						} else {
 								options = _.extend({}, options, {}); // extend it so we can't mutate
 						}
-						console.log(options);
 						results = await req.app.get('db')[modelName]
 								.findAll(options)
 								.then(

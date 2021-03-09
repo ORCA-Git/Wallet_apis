@@ -153,7 +153,6 @@ class UsersController extends BaseController {
 						await super.create(req, 'activity_log', logData);
 						const tokenFromHeader = auth.getJwtToken(req);
 						const user = jwt.decode(tokenFromHeader);
-						console.log(user);
 						const options = {
 								where: { id: user.payload.id },
 						};

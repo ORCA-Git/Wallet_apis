@@ -60,7 +60,7 @@ class UsersController extends BaseController {
 
 						const partner = await super.getById(req, 'Partners');
 						let contents = null;
-						if (partner.dataValues.document != null || partner.dataValues.document !== '') {
+						if (partner.dataValues.document) {
 								contents = await fs.readFile(`uploads/${partner.dataValues.document}`, { encoding: 'base64' });
 						} else {
 								contents = null;

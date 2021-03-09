@@ -38,9 +38,6 @@ module.exports = {
 						if (error) {
 							logger.log(`error ,Error during processing request at : ${new Date()} details message: ${error.message}`, 'error');
 						}
-						console.log(response.statusCode);
-						console.log(response.body);
-						console.log(response.headers);
 					});
 				}
 				// return
@@ -52,7 +49,6 @@ module.exports = {
 			} else {
 				logger.log(`an email has been sent: ${new Date()} with results: ${results}`, 'info');
 			}
-			console.log('Done');
 		});
 		parentCallback(null,
 			{
