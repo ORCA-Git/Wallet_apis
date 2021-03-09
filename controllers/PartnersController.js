@@ -59,15 +59,23 @@ class UsersController extends BaseController {
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 
 						const partner = await super.getById(req, 'Partners');
-						let contents = null;
-						if (partner.dataValues.document) {
-								contents = await fs.readFile(`uploads/${partner.dataValues.document}`, { encoding: 'base64' });
-						} else {
-								contents = null;
-						}
-						const image = {
-								image: contents,
+						const optionImg = {
+								where: { partnerId: reqParam },
 						};
+						const resultImage = await super.getList(req, 'PartnerFiles', optionImg);
+						const image = [];
+						if (resultImage) {
+								// eslint-disable-next-line no-restricted-syntax
+								for (const data of resultImage) {
+										// eslint-disable-next-line no-await-in-loop
+										const contents = await fs.readFile(`uploads/${data.dataValues.fileName}`, { encoding: 'base64' });
+										const imgContents = {
+												id: data.dataValues.id,
+												image: contents,
+										};
+										image.push(imgContents);
+								}
+						}
 						const options = {
 								where: { userId: req.params.id },
 						};
@@ -132,7 +140,7 @@ class UsersController extends BaseController {
 								partnerName: Joi.string()
 										.required(),
 						};
-
+						delete req.body.document;
 						const { error } = Joi.validate({
 							partnerCode: req.body.partnerCode,
 							partnerName: req.body.partnerName,
@@ -150,16 +158,22 @@ class UsersController extends BaseController {
 						if (req.body.expireDate === '') {
 								delete req.body.expireDate;
 						}
-						if (req.files[0]) {
-								req.body.document = req.files[0].filename;
-						} else {
-								delete req.body.document;
-						}
 						req.body.code = req.body.partnerCode;
 						req.body.Address = req.body.address;
 						req.body.password = bcrypt.hashSync(req.body.password, config.auth.saltRounds);
 						const createdUser = await super.create(req, 'Partners');
 						if (!(_.isNull(createdUser))) {
+								req.body.partnerId = createdUser.dataValues.id;
+								if (req.files.length > 0) {
+										// eslint-disable-next-line no-plusplus
+										for (let i = 0; i < req.files.length; i++) {
+												req.body.fileName = req.files[i].filename;
+												// eslint-disable-next-line no-await-in-loop
+												await super.create(req, 'PartnerFiles');
+										}
+								} else {
+										delete req.body.document;
+								}
 								req.body.userId = createdUser.dataValues.id;
 								req.body.amount = req.body.walletAmount;
 								req.body.minTransaction = req.body.minAmtTransaction;
@@ -200,11 +214,18 @@ class UsersController extends BaseController {
 						requestHandler.validateJoi(error, 400, 'bad Request', 'invalid Partner Id');
 						await super.getById(req, 'Partners');
 						delete req.body.password;
+						delete req.body.document;
 						req.body.updated_at = new Date();
 						req.params.id = reqParam;
 						req.body.code = req.body.partnerCode;
-						if (req.files[0]) {
-								req.body.document = req.files[0].filename;
+						req.body.partnerId = reqParam;
+						if (req.files.length > 0) {
+								// eslint-disable-next-line no-plusplus
+								for (let i = 0; i < req.files.length; i++) {
+										req.body.fileName = req.files[i].filename;
+										// eslint-disable-next-line no-await-in-loop
+										await super.create(req, 'PartnerFiles');
+								}
 						} else {
 								delete req.body.document;
 						}
@@ -220,6 +241,22 @@ class UsersController extends BaseController {
 						requestHandler.sendSuccess(res, 'Success Update Partner', 200)();
 				} catch (err) {
 						requestHandler.sendError(req, res, err);
+				}
+		}
+
+		static async deletePartnerFile(req, res) {
+				try {
+						const logData = {
+								action: 'Delete',
+								description: `User ${req.decoded.payload.employeeCode} has request delete partner file`,
+								user: req.decoded.payload.employeeCode,
+								date: new Date(),
+						};
+						await super.create(req, 'activity_log', logData);
+						const result = await super.deleteById(req, 'PartnerFiles');
+						return requestHandler.sendSuccess(res, 'User Deleted Successfully')({ result });
+				} catch (err) {
+						return requestHandler.sendError(req, res, err);
 				}
 		}
 }

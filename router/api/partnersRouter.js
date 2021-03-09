@@ -277,5 +277,29 @@ router.get('/:id', auth.isAuthenticated, PartnersController.getPartnerById);
  *           $ref: '#/definitions/users'
  */
 router.delete('/:id', auth.isAuthenticated, PartnersController.deleteById);
+/**
+ * @swagger
+ * /partners/file/{fileId}:
+ *   delete:
+ *     tags:
+ *       - Partners
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *      - name: fileId
+ *        description: numeric id of the file
+ *        in: path
+ *        required: true
+ *        type: integer
+ *        minimum: 1
+ *     responses:
+ *       200:
+ *         description: delete file with id
+ *         schema:
+ *           $ref: '#/definitions/users'
+ */
+router.delete('/file/:id', auth.isAuthenticated, PartnersController.deletePartnerFile);
 
 module.exports = router;
